@@ -48,6 +48,7 @@ git commit -m "Rezolvare Laborator 1"
 git push origin Nume-Prenume
 ```
 
+
 ## Resurse utile
 [Github Docs](https://docs.github.com/en)
 [Python Docs](https://docs.python.org/3/)
