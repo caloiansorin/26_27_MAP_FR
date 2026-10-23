@@ -1,20 +1,10 @@
-# Repo Metode avansate de programare
-## Despre disciplina
-Este un repo destinat activitatilor de laboror din cadrul disciplinei **Metode avansate de programare**
+# Template de organizare a unui proiect cu ajutorul lui GitHub
 
-## Obiective:
-- Dezvoltarea aplicatiilor in Python.
-- Utilizarea sistmului de verionare Git.
-- Familiarizarea cu platforma GitHub.
+Prezentul **README** este un template ce poate fi folosit si pe parcursul urmatoarelor proiecte.
 
-## Tehnologii utilizate
-| Tehnologie | Descriere |
-|------------|-----------|
-| Git | Sistem de versionare |
-| GitHub | Platforma de colaborare |
-| Python | Limbaj de programare |
+## Problema pe care o rezolva
 
-## Utilizarea repository-ului
+## Pasii pentru utilizare
 ### 1. Clonarea repsitory-ului
 ```bash
 git clone https://github.com/caloiansorin/26_27_MAP_FR
@@ -47,9 +37,6 @@ git commit -m "Rezolvare Laborator 1"
 ```bash
 git push origin Nume-Prenume
 ```
+## Colaborare
 
-
-## Resurse utile
-[Github Docs](https://docs.github.com/en)
-[Python Docs](https://docs.python.org/3/)
-## SPOR LA TREABA
+## Licenta si persoana de contact
