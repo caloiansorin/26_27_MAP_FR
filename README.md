@@ -1,42 +1,91 @@
-# Template de organizare a unui proiect cu ajutorul lui GitHub
+# Titlu Proiect
+Acesta este un README Template, pentru a putea fi importat si integrat de catre oricine, atat in proiectele academice cat si cele profesionale.
 
-Prezentul **README** este un template ce poate fi folosit si pe parcursul urmatoarelor proiecte.
+---
 
-## Problema pe care o rezolva
+## Continut
 
-## Pasii pentru utilizare
-### 1. Clonarea repsitory-ului
-```bash
-git clone https://github.com/caloiansorin/26_27_MAP_FR
-```
-### 2. Accesarea folderului
-```bash
-cd 26_27_MAP_FR
-```
-### 3. Actualizarea informatiilor
-```bash
-git fetch origin
-```
-### 4. Vizualizarea branch-urilor
-```bash
-git branch -a
-```
-### 5. Trecerea pe branch-ul personal
-```bash
-git switch Nume-Prenume
-```
-### 6. Adaugarea modificarilor
-```bash
-git add .
-```
-### 7. Crearea unui commit
-```bash
-git commit -m "Rezolvare Laborator 1"
-```
-### 8. Trimiterea modificarilor pe GitHub
-```bash
-git push origin Nume-Prenume
-```
-## Colaborare
+- [Despre](#despre)
+  - [Tehnologii utilizate](#tehnologii-utilizate)
+- [Ghidul Utilizatorului](#ghidul-utilizatorului)
+  - [Cerinte](#cerinte)
+  - [Instalare](#instalare)
+- [Utilizare](#utilizare)
+- [Roadmap](#roadmap)
+- [Contributii](#contributii)
+- [Licentiere](#licentiere)
+- [Contact](#contact)
 
-## Licenta si persoana de contact
+---
+
+## Despre
+Mai multe detalii, cat mai succinte dar suficient de descriptive despre **ce problema rezolva acest proiect**.
+
+### Tehnologii utilizate
+Framework-uri, librarii, tool-uri utilizate pentru a crea acest proiect.
+
+*   [Tech 1](https://url-to-tech.com)
+*   [Tech 2](https://url-to-tech.com)
+*   [Tech 3](https://url-to-tech.com)
+
+---
+
+## Ghidul Utilizatorului
+Pasii pe care utilizatorul trebuie sa ii urmeze pentru a avea pe setup-ul local continutul proiectului.
+
+### Cerinte
+Indicatii cu privire la ce aplicatii, unelte, dependinte trebuiesc instalate inainte de proiect.
+*   `npm` (v6.0 or higher)
+*   `Node.js` (v14.0 or higher)
+
+### Instalare
+Pasii necesari pentru a putea instala aplicatia noastra
+
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/adinanistor/proiect.git
+   ```
+2. Navigate into the project directory:
+   ```bash
+   cd proiect
+   ```
+3. Install dependencies:
+   ```bash
+   npm install
+   ```
+
+---
+
+## Utilizare
+Explicatii cum se va utiliza aplicatia odata instalata. Pot fi incluse aici si secvente de cod, exemple, screenshoturi.
+
+```bash
+npm start
+```
+
+Pentru mai multe detalii, va invitam sa parcurgeti pagina noastra de [Wiki](https://github.com/adinanistor/proiect/wiki).
+
+---
+
+## Roadmap
+Puteti urmari o lista mai detailata a noilor functionalitati propuse sau bug-uri ce sunt sub analize spre a fi solutionate, accesand sectiunea de [Issues](https://github.com/adinanistor/proiect/issues).
+
+- [x] Feature Idea A
+- [ ] Feature Idea B
+- [ ] Refactor
+
+---
+
+## Contributii
+Orice contributie este **binevenita**! Pentru mai multe detalii ca invitam sa parcurgeti micul nostru ghid descris in [CONTRIBUTING](CONTRIBUTING.md)
+
+---
+
+## Licentiere
+Distribuit sub licenta MIT. Pentru mai multe informatii, accesati fisierul [LICENSE](LICENSE.md)
+
+---
+
+## Contact
+Adina Vornicu - adina.vornicu25 [at] student.ub.ro
+[https://github.com/adinanistor/proiect](https://github.com/adinanistor/proiect)
