@@ -1,6 +1,4 @@
 # Nu am idee ce fac
-## Despre disciplina
-Este un repo destinat activitatilor de laboror din cadrul disciplinei **Metode avansate de programare**
 
 ## Obiective:
 - Să supraviețuiesc acest semestru
