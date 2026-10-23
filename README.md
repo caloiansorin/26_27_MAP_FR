@@ -2,7 +2,7 @@
 
 # 
 
-# Acest document descrie pașii principali pentru lucrul pe un branch dedicat și salvarea modificărilor pe GitHub.
+# Acest document descrie pașii principali pentru lucrul pe un branch dedicat și salvarea modificarilor pe GitHub.
 
 # 
 
