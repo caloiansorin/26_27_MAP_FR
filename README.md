@@ -15,39 +15,46 @@ Este un repo destinat activitatilor de laboror din cadrul disciplinei **Metode a
 | Python | Limbaj de programare |
 
 ## Utilizarea repository-ului
-### 1. Clonarea repsitory-ului
+### 1. Vedem prima data daca avem git 
+```bash
+git --version
+```
+### 1.1 Creare folde unde vrem sa lucram
+```bash
+     #in acel fordel deschidem terminalul
+```
+### 2. Mergem pe git-ul care ne intereseaza
 ```bash
 git clone https://github.com/caloiansorin/26_27_MAP_FR
 ```
-### 2. Accesarea folderului
+### 3. Accesarea folderului
 ```bash
 cd 26_27_MAP_FR
 ```
-### 3. Actualizarea informatiilor
+### 4. Actualizarea informatiilor
 ```bash
 git fetch origin
 ```
-### 4. Vizualizarea branch-urilor
+### 5. Vizualizarea branch-urilor
 ```bash
 git branch -a
 ```
-### 5. Trecerea pe branch-ul personal
+### 6. Trecerea pe branch-ul personal
 ```bash
-git switch Nume-Prenume
+git switch Nistor-Constantin
 ```
-### 6. Adaugarea modificarilor
+### 7.  Adaugarea modificarilor
 ```bash
 git add .
 ```
-### 7. Crearea unui commit
+### 8. Crearea unui commit
 ```bash
 git commit -m "Rezolvare Laborator 1"
 ```
-### 8. Trimiterea modificarilor pe GitHub
+### 9. Trimiterea modificarilor pe GitHub
 ```bash
-git push origin Nume-Prenume
+git push origin Nistor-Constantin
 ```
-
 
 ## Resurse utile
 [Github Docs](https://docs.github.com/en)
