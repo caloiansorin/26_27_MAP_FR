@@ -1,6 +1,6 @@
-# Repo Metode avansate de programare
+# GitHub
 ## Despre disciplina
-Este un repo destinat activitatilor de laboror din cadrul disciplinei **Metode avansate de programare**
+Fișier destinat activităților de laborator din cadrul disciplinei RCSP
 
 ## Obiective:
 - Dezvoltarea aplicatiilor in Python.
