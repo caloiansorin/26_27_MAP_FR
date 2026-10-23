@@ -1,62 +1,55 @@
-# Repo Metode avansate de programare
-## Despre disciplina
+# Pasii de utilizare GitHub
+## Creeaza cont si repository
 
-Este un repo destinat activitatilor de laborator din cadrul disciplinei **Metode avansate de programare**
+Intra pe github.com, fa-ti cont si apasa pe New repository. Pune-i un nume si lasa-l Public sau Private.
 
-## Obiective:
-- Dezvoltarea aplicatiilor in Python
-- Utilizarea sistemului de versionare Git.
-- Familiarizarea cu platforma GitHub.
-
-
-## Tehnologii utilizate
-
-| Tehnologie | Descriere |
-|------------|-----------|
-| Git | Sistem de versionare|
-| GitHub | Platforma de colaborare |
-| Python | Limbaj de programare |
-
-## Utilizarea repository-ului
-### 1. Clonarea repository-ului
+## Configureaza Git pe calculator
+Deschide terminalul si seteaza identitatea:
 ```bash
-git clone https://github.com/cloiansorin/26_27_MAP_FR
+git config --global user.name "Numele Tau"
 
-```
-### 2. Accesarea folderului
-```bash
-cd 26_27_MAP_FR
+git config --global user.email "email@exemplu.com"
 ```
 
-### 3. Actualizarea informatiilor
+## Cloneaza sau initializeaza proiectul
+
+Daca iei repo-ul de pe GitHub:
 ```bash
 
-git fetch origin
-```
-### 4. Vizualizarea branch-urilor
-```bash
-git branch -a
-```
+git clone [https://github.com/user/repo.git](https://github.com/user/repo.git)
 
-### 5. Trecerea pe branch-ul personal
-```bash
-git switch Nume-Prenume
 ```
-### 6. Adaugarea modificarilor
+Daca pornesti dintr-un folder local existent:
+```bash
+git init
+
+git remote add origin [https://github.com/user/repo.git](https://github.com/user/repo.git)
+```
+### 1. Salveaza modificarile (Commit)
+
+Dupa ce ai modificat sau adaugat fisiere:
+
 ```bash
 git add .
-```
-### 7. Crearea unui commit
-```bash
-git commit -m "Rezolvare Laborator 1"
-```
-### 8. Trimiterea modificarilor pe GitHub
-```bash
-git push origin Nume-Prenume
+
+git commit -m "Mesaj scurt despre modificari"
+
 ```
 
-## Resurse utile
-[Github Docs](https://docs.github.com/en)
-[Python Docs](https//doc.python.org/3/)
+### 2. Trimite pe GitHub (Push)
+
+```bash
+git push -u origin main
+```
+### 3. Descarca modificarile noi (Pull)
+
+Cand lucrezi in echipa sau de pe alt PC:
+
+```bash 
+
+git pull
+
+```
+
 
 ## SPOR LA TREABA
