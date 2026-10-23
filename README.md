@@ -1,4 +1,4 @@
-# Repo Metode avansate de programare
+# Metode avansate de programare
 ## Despre disciplina
 Este un repo destinat activitatilor de laboror din cadrul disciplinei **Metode avansate de programare**
 
@@ -19,9 +19,9 @@ Este un repo destinat activitatilor de laboror din cadrul disciplinei **Metode a
 ```bash
 git --version
 ```
-### 1.1 Creare folde unde vrem sa lucram
+### 1.1 Creare folder unde vrem sa lucram
 ```bash
-     #in acel fordel deschidem terminalul
+     #in acel folder deschidem terminalul
 ```
 ### 2. Mergem pe git-ul care ne intereseaza
 ```bash
@@ -57,6 +57,6 @@ git push origin Nistor-Constantin
 ```
 
 ## Resurse utile
-[Github Docs](https://docs.github.com/en)
+[Github Docs](https://github.com/nistorconstantin)
 [Python Docs](https://docs.python.org/3/)
 ## SPOR LA TREABA
