@@ -1,53 +1,48 @@
-# Repo Metode avansate de programare
-## Despre disciplina
-Este un repo destinat activitatilor de laboror din cadrul disciplinei **Metode avansate de programare**
+# Ghid utilizare GitHub
+## Ce sunt Git si GitHub?
+- **Git** – sistem de control al versiunilor, utilizat pentru urmarirea modificarilor dintr-un proiect.
+- **GitHub** – platforma online pentru stocarea si colaborarea la proiecte Git.
 
-## Obiective:
-- Dezvoltarea aplicatiilor in Python.
-- Utilizarea sistmului de verionare Git.
-- Familiarizarea cu platforma GitHub.
+## Obiective
+- Invatarea si utilizarea sistemului de versionare Git.
+- Familiarizarea cu platforma GitHub si gestionarea repository-urilor.
+- Exersarea comenzilor Git pentru salvarea si actualizarea modificarilor.
 
-## Tehnologii utilizate
-| Tehnologie | Descriere |
-|------------|-----------|
-| Git | Sistem de versionare |
-| GitHub | Platforma de colaborare |
-| Python | Limbaj de programare |
+## Instalare pentru Windows
+Descarca Git de pe [git-scm.com](https://git-scm.com/install/).
 
-## Utilizarea repository-ului
-### 1. Clonarea repsitory-ului
+Verifica instalarea:
 ```bash
-git clone https://github.com/caloiansorin/26_27_MAP_FR
+git --version
 ```
-### 2. Accesarea folderului
+
+## Instalare pentru macOS
+Instaleaza [homebrew](https://brew.sh) si apoi rulează comanda în terminal:
 ```bash
-cd 26_27_MAP_FR
+brew install git
 ```
-### 3. Actualizarea informatiilor
-```bash
-git fetch origin
-```
-### 4. Vizualizarea branch-urilor
-```bash
-git branch -a
-```
-### 5. Trecerea pe branch-ul personal
-```bash
-git switch Nume-Prenume
-```
-### 6. Adaugarea modificarilor
+
+### Comenzile de baza
+
+| Comandă | Utilizare |
+|---|---|
+| `git init` | Inițializează un repository |
+| `git clone URL` | Descarcă un repository |
+| `git status` | Verifică modificările |
+| `git add .` | Pregătește fișierele |
+| `git commit -m "mesaj"` | Salvează modificările |
+| `git push` | Încarcă modificările pe GitHub |
+| `git pull` | Descarcă modificările de pe GitHub |
+
+### Fluxul de lucru
+
 ```bash
 git add .
-```
-### 7. Crearea unui commit
-```bash
-git commit -m "Rezolvare Laborator 1"
-```
-### 8. Trimiterea modificarilor pe GitHub
-```bash
-git push origin Nume-Prenume
+git commit -m "Actualizare proiect"
+git push
 ```
 
-## Resurse utile
-[Github Docs](https://docs.github.com/en)
-[Python Docs](https://docs.python.org/3/)
+### Resurse utile
+- [Git Documentation](https://git-scm.com/doc)
+- [GitHub Docs](https://docs.github.com/)
+
