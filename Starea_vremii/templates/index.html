@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="ro">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Starea vremii</title>
+  </head>
+  <body
+    style="
+      margin: 0;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(135deg, #4facfe, #00f2fe);
+      font-family: Arial, Helvetica, sans-serif;
+    "
+  >
+    <div
+      style="
+        background: #ffffff;
+        padding: 32px;
+        border-radius: 16px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+        width: 100%;
+        max-width: 420px;
+        margin: 16px;
+        text-align: center;
+      "
+    >
+      <form
+        method="get"
+        action="/"
+        style="display: flex; gap: 8px; margin-bottom: 24px"
+      >
+        <input
+          type="text"
+          name="oras"
+          placeholder="Introdu numele orasului"
+          value="{{ oras or '' }}"
+          style="
+            flex: 1;
+            min-width: 0;
+            padding: 10px 14px;
+            font-size: 16px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            outline: none;
+          "
+        />
+        <button
+          type="submit"
+          style="
+            padding: 10px 18px;
+            font-size: 16px;
+            color: #ffffff;
+            background: #0077cc;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+          "
+        >
+          Afiseaza vremea
+        </button>
+      </form>
+
+      <h1 style="font-size: 22px; color: #333333; margin: 12px 0">
+        Starea vremii: {{ stare_vreme }}
+      </h1>
+      <h1 style="font-size: 22px; color: #333333; margin: 12px 0">
+        Viteza vantului: {{ viteza_vant }} m/s
+      </h1>
+      <h1 style="font-size: 22px; color: #333333; margin: 12px 0">
+        Temperatura: {{ temperatura }} °C
+      </h1>
+    </div>
+  </body>
+</html>
