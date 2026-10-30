@@ -1,10 +1,15 @@
 import os
 from dotenv import load_dotenv  # pip3 install dotenv
 import requests  # DACA nu es instalata foloseste: pip3 install requests
+from fastapi import FastAPI
+from fastapi.templating import Jinja2Templates
+
 ### FORMA APEL API ###
 # https://api.openweathermap.org/data/2.5/onecall?lat={lat}&lon={lon}&appid={API key}
 
 # http://api.openweathermap.org/geo/1.0/direct?q={city name},{state code},{country code}&limit={limit}&appid={API key}
+# pip3 install uv
+# pip3 install fastapi
 
 ### NU UITATI SA MODIFICATI CALEA CATRE FISIERUL .env DIN LINIA DE MAI JOS ###
 load_dotenv("/Users/spikecsi/Desktop/Projects/MAP FR/26_27_MAP_FR/.env")
