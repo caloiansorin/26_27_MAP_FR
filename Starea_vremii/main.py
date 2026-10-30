@@ -57,7 +57,7 @@ def afisare_informatii_meteo(oras):
 
 
 @app.get("/")
-def home(request: Request, oras: str = "Buhusi"):
+def home(request: Request, oras: str = ""):
     vreme = None
     eroare = None
     oras = oras.strip()
@@ -71,8 +71,10 @@ def home(request: Request, oras: str = "Buhusi"):
             }
         except requests.RequestException as e:
             eroare = "EROARE LA APELUL API !"
+
         except Exception as e:
             eroare = "ORASUL NU A FOST GASIT !"
+
     return templates.TemplateResponse(
         request=request,
         name="index.html",
@@ -82,3 +84,6 @@ def home(request: Request, oras: str = "Buhusi"):
             "eroare": eroare,
         },
     )
+
+
+# uvicorn main:app --reload --ws none
