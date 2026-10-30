@@ -5,53 +5,14 @@ import requests  # DACA nu es instalata foloseste: pip3 install requests
 from fastapi import FastAPI, Request
 from fastapi.templating import Jinja2Templates
 from fastapi import HTTPException
-import sqlite3
+from pathlib import Path
 
-### FORMA APEL API ###
-# https://api.openweathermap.org/data/2.5/onecall?lat={lat}&lon={lon}&appid={API key}
-
-# http://api.openweathermap.org/geo/1.0/direct?q={city name},{state code},{country code}&limit={limit}&appid={API key}
-# pip3 install uv
-# pip3 install fastapi
-
-### NU UITATI SA MODIFICATI CALEA CATRE FISIERUL .env DIN LINIA DE MAI JOS ###
-load_dotenv("/Users/spikecsi/Desktop/Projects/MAP FR/26_27_MAP_FR/.env")
-cheie_api_openweathermap = os.getenv("API_KEY")
-url_geo = os.getenv("URL_API_G")
-url_api_openweathermap = os.getenv("URL_API_O")
+from baza_date import creare_tabel, salvare_vreme, citire_vreme
+from meteo import afisare_informatii_meteo, aflare_ll
 
 app = FastAPI()
-templates = Jinja2Templates(directory="templates")
-
-
-def aflare_ll(oras):
-    raspuns = requests.get(
-        url_geo, params={"q": oras, "appid": cheie_api_openweathermap}
-    ).json()
-    lat = raspuns[0]["lat"]
-    lon = raspuns[0]["lon"]
-    return lat, lon
-
-
-def afisare_informatii_meteo(oras):
-    latitudine = aflare_ll(oras)[0]
-    longitudine = aflare_ll(oras)[1]
-    raspuns = requests.get(
-        url_api_openweathermap,
-        params={
-            "lat": latitudine,
-            "lon": longitudine,
-            "appid": cheie_api_openweathermap,
-            "lang": "ro",
-            "units": "metric",
-        },
-    ).json()
-    stare_vreme = raspuns["weather"][0]["description"]
-    viteza_vant = raspuns["wind"]["speed"]
-    temperatura = raspuns["main"]["temp"]
-    iconita = raspuns["weather"][0]["icon"]
-
-    return stare_vreme, viteza_vant, temperatura, iconita
+proiect = Path(__file__).resolve().parent
+templates = Jinja2Templates(directory=proiect / "templates")
 
 
 @app.get("/")
@@ -61,15 +22,7 @@ def home(request: Request, oras: str = ""):
     oras = oras.strip()
     if oras:
         try:
-            stare_vreme, viteza_vant, temperatura, iconita = afisare_informatii_meteo(
-                oras
-            )
-            vreme = {
-                "stare_vreme": stare_vreme,
-                "viteza_vant": viteza_vant,
-                "temperatura": temperatura,
-                "iconita": iconita,
-            }
+            vreme = prelucrare_si_salvare(oras)
         except requests.RequestException:
             raise HTTPException(
                 status_code=502, detail="Eroare la apelul API-ului OpenWeatherMap"
@@ -94,15 +47,14 @@ def home(request: Request, oras: str = ""):
 
 @app.get("/api/vreme")
 def api_vreme(oras: str = ""):
+    oras = oras.strip()
+    if not oras:
+        raise HTTPException(
+            status_code=400, detail="Parametrul 'oras' este obligatoriu."
+        )
+
     try:
-        stare_vreme, viteza_vant, temperatura, iconita = afisare_informatii_meteo(oras)
-        return {
-            "oras": oras,
-            "stare_vreme": stare_vreme,
-            "viteza_vant": viteza_vant,
-            "temperatura": temperatura,
-            "iconita": iconita,
-        }
+        return prelucrare_si_salvare(oras)
     except requests.RequestException:
         raise HTTPException(
             status_code=502, detail="Eroare la apelul API-ului OpenWeatherMap"
@@ -114,4 +66,22 @@ def api_vreme(oras: str = ""):
         )
 
 
+def prelucrare_si_salvare(oras):
+    stare_vreme, viteza_vant, temperatura, iconita = afisare_informatii_meteo(oras)
+    salvare_vreme(oras, stare_vreme, viteza_vant, temperatura, iconita)
+    return {
+        "oras": oras,
+        "stare_vreme": stare_vreme,
+        "viteza_vant": viteza_vant,
+        "temperatura": temperatura,
+        "iconita": iconita,
+    }
+
+
+@app.get("/api/istoric")
+def api_istoric():
+    return citire_vreme()
+
+
+creare_tabel()
 # uvicorn main:app --reload --ws none
