@@ -18,6 +18,9 @@ cheie_api_openweathermap = os.getenv("API_KEY")
 url_geo = os.getenv("URL_API_G")
 url_api_openweathermap = os.getenv("URL_API_O")
 
+app = FastAPI()
+templates = Jinja2Templates(directory="templates")
+
 
 def aflare_ll(oras):
     raspuns = requests.get(
@@ -46,6 +49,3 @@ def afisare_informatii_meteo(oras):
     temperatura = raspuns["main"]["temp"]
 
     return stare_vreme, viteza_vant, temperatura
-
-
-print(afisare_informatii_meteo(input("Introdu numele orasului: ")))
