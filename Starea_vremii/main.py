@@ -1,5 +1,7 @@
 import os
 from dotenv import load_dotenv  # pip3 install dotenv
+import requests  # DACA nu es instalata foloseste: pip3 install requests
+from fastapi import FastAPI, Request
 import requests
 from fastapi import FastAPI
 from fastapi.templating import Jinja2Templates
@@ -17,6 +19,9 @@ load_dotenv("E:/Facultate/MAP/26_27_MAP_FR/.env")
 cheie_api_openweathermap = os.getenv("API_KEY")
 url_geo = os.getenv("URL_API_G")
 url_api_openweathermap = os.getenv("URL_API_O")
+
+app = FastAPI()
+templates = Jinja2Templates(directory="templates")
 
 app = FastAPI()
 templates = Jinja2Templates(directory="templates")
@@ -49,3 +54,31 @@ def afisare_informatii_meteo(oras):
     temperatura = raspuns["main"]["temp"]
 
     return stare_vreme, viteza_vant, temperatura
+
+
+@app.get("/")
+def home(request: Request, oras: str = "Buhusi"):
+    vreme = None
+    eroare = None
+    oras = oras.strip()
+    if oras:
+        try:
+            stare_vreme, viteza_vant, temperatura = afisare_informatii_meteo(oras)
+            vreme = {
+                "stare_vreme": stare_vreme,
+                "viteza_vant": viteza_vant,
+                "temperatura": temperatura,
+            }
+        except requests.RequestException as e:
+            eroare = "EROARE LA APELUL API !"
+        except Exception as e:
+            eroare = "ORASUL NU A FOST GASIT !"
+    return templates.TemplateResponse(
+        request=request,
+        name="index.html",
+        context={
+            "oras": oras,
+            "vreme": vreme,
+            "eroare": eroare,
+        },
+    )
