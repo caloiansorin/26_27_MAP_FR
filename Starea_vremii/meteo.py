@@ -3,7 +3,7 @@ from dotenv import load_dotenv  # pip3 install dotenv
 from pathlib import Path
 import requests
 
-load_dotenv("/Users/spikecsi/Desktop/Projects/MAP FR/26_27_MAP_FR/.env")
+load_dotenv("E:/Facultate/MAP/26_27_MAP_FR/.env")
 cheie_api_openweathermap = os.getenv("API_KEY")
 url_geo = os.getenv("URL_API_G")
 url_api_openweathermap = os.getenv("URL_API_O")

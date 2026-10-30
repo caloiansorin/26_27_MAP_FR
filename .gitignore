@@ -1,3 +1,4 @@
 .env
 .vscode
 Starea_vremii/__pycache__/
+Starea_vremii/vreme.db
