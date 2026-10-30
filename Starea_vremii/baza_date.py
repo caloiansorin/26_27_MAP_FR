@@ -1,7 +1,8 @@
 import sqlite3
 from pathlib import Path
 
-cale_db = "/Users/spikecsi/Desktop/Projects/MAP FR/26_27_MAP_FR/Starea_vremii/vreme.db"
+proiect = Path(__file__).resolve().parent
+cale_db = proiect / "vreme.db"
 
 
 def creare_tabel():
