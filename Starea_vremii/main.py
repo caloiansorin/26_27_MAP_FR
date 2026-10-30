@@ -8,4 +8,22 @@ cheie_api_openweathermap: str | None = os.getenv(key="API_KEY")
 print(cheie_api_openweathermap)
 
 URL_API: str | None = os.getenv(key="URL_API")
+latitudine= 46.55
+longitudine= 26.91
+
+
+def afisare_informatii_meteo(latitudine, longitudine):
+    raspuns: Response = requests.get
+    (url=URL_API, 
+        params={
+        "lat": latitudine,
+        "lon": longitudine,
+        "appid": cheie_api_openweathermap,
+    }
+    ).json()
+
+    return raspuns
+
+for x, y in afisare_informatii_meteo(latitudine, longitudine).items():
+    print(x, ":" , y)
 
