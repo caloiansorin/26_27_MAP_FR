@@ -1,8 +1,11 @@
+from optparse import Values
 import os
 from dotenv import load_dotenv  # pip3 install dotenv
 import requests  # DACA nu es instalata foloseste: pip3 install requests
 from fastapi import FastAPI, Request
 from fastapi.templating import Jinja2Templates
+from fastapi import HTTPException
+import sqlite3
 
 ### FORMA APEL API ###
 # https://api.openweathermap.org/data/2.5/onecall?lat={lat}&lon={lon}&appid={API key}
@@ -46,8 +49,9 @@ def afisare_informatii_meteo(oras):
     stare_vreme = raspuns["weather"][0]["description"]
     viteza_vant = raspuns["wind"]["speed"]
     temperatura = raspuns["main"]["temp"]
+    iconita = raspuns["weather"][0]["icon"]
 
-    return stare_vreme, viteza_vant, temperatura
+    return stare_vreme, viteza_vant, temperatura, iconita
 
 
 @app.get("/")
@@ -57,17 +61,25 @@ def home(request: Request, oras: str = ""):
     oras = oras.strip()
     if oras:
         try:
-            stare_vreme, viteza_vant, temperatura = afisare_informatii_meteo(oras)
+            stare_vreme, viteza_vant, temperatura, iconita = afisare_informatii_meteo(
+                oras
+            )
             vreme = {
                 "stare_vreme": stare_vreme,
                 "viteza_vant": viteza_vant,
                 "temperatura": temperatura,
+                "iconita": iconita,
             }
-        except requests.RequestException as e:
-            eroare = "EROARE LA APELUL API !"
+        except requests.RequestException:
+            raise HTTPException(
+                status_code=502, detail="Eroare la apelul API-ului OpenWeatherMap"
+            )
 
-        except Exception as e:
-            eroare = "ORASUL NU A FOST GASIT !"
+        except ValueError:
+            raise HTTPException(
+                status_code=404,
+                detail="Nu am putut găsi informații despre vreme pentru orașul specificat.",
+            )
 
     return templates.TemplateResponse(
         request=request,
@@ -78,6 +90,28 @@ def home(request: Request, oras: str = ""):
             "eroare": eroare,
         },
     )
+
+
+@app.get("/api/vreme")
+def api_vreme(oras: str = ""):
+    try:
+        stare_vreme, viteza_vant, temperatura, iconita = afisare_informatii_meteo(oras)
+        return {
+            "oras": oras,
+            "stare_vreme": stare_vreme,
+            "viteza_vant": viteza_vant,
+            "temperatura": temperatura,
+            "iconita": iconita,
+        }
+    except requests.RequestException:
+        raise HTTPException(
+            status_code=502, detail="Eroare la apelul API-ului OpenWeatherMap"
+        )
+    except ValueError:
+        raise HTTPException(
+            status_code=404,
+            detail="Nu am putut găsi informații despre vreme pentru orașul specificat.",
+        )
 
 
 # uvicorn main:app --reload --ws none
