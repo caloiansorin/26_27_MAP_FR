@@ -1,7 +1,8 @@
 import os
 from dotenv import load_dotenv
 
-load_dotenv()
-##sa se modifice calea din linia de mai jos##
-cheie_api_openweather = os.getenv("API_KEY")
-print(cheie_api_openweather)
+# pip3 install dotenv
+### NU UITATI SA MODIFICATI CALEA CATRE FISIERUL .env DIN LINIA DE MAI JOS ###
+load_dotenv(".env")
+cheie_api_openweathermap = os.getenv("API_KEY")
+print(cheie_api_openweathermap)
