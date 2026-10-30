@@ -1,0 +1,76 @@
+<style>
+  .nav-link {
+    padding: 8px 18px;
+    font-size: 15px;
+    font-weight: 600;
+    color: rgba(255, 255, 255, 0.85);
+    text-decoration: none;
+    border-radius: 999px;
+    transition:
+      background 0.2s,
+      color 0.2s;
+  }
+  .nav-link:hover {
+    color: #ffffff;
+    background: rgba(255, 255, 255, 0.18);
+  }
+  .nav-link.activ {
+    color: #1e3a8a;
+    background: #ffffff;
+    box-shadow: 0 4px 12px rgba(15, 23, 42, 0.2);
+  }
+</style>
+<header
+  style="
+    box-sizing: border-box;
+    width: 100%;
+    max-width: 440px;
+    margin: 16px 16px 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    align-items: center;
+    justify-content: space-between;
+  "
+>
+  <a
+    href="/"
+    style="
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 22px;
+      font-weight: 700;
+      letter-spacing: -0.5px;
+      color: #ffffff;
+      text-decoration: none;
+      text-shadow: 0 2px 8px rgba(15, 23, 42, 0.3);
+    "
+  >
+    <span style="font-size: 26px; line-height: 1">⛅</span>
+    Starea vremii
+  </a>
+  <nav
+    style="
+      display: flex;
+      gap: 4px;
+      padding: 4px;
+      background: rgba(255, 255, 255, 0.15);
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      border-radius: 999px;
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+    "
+  >
+    <a
+      href="/"
+      class="nav-link {% if request.url.path == '/' %}activ{% endif %}"
+      >Acasa</a
+    >
+    <a
+      href="/api/istoric"
+      class="nav-link {% if request.url.path == '/istoric' %}activ{% endif %}"
+      >Istoric</a
+    >
+  </nav>
+</header>
