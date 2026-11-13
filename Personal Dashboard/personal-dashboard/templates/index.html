@@ -20,7 +20,7 @@
 
     <main class="container">
       <section class="greeting">
-        <h1>Bună ziua!</h1>
+        <h1>{{salut}}</h1>
         <p>Miercuri, 11 noiembrie 2026</p>
       </section>
 
@@ -33,7 +33,7 @@
           </div>
 
           <div class="progress">
-          <div class="progress-bar" style="width: {{progres}}%"></div>
+            <div class="progress-bar" style="width: {{progres}}%"></div>
           </div>
 
           <form class="task-form" action="/sarcini/adauga" method="post">
@@ -77,7 +77,7 @@
         <article class="card card-weather">
           <div class="card-header">
             <h2>Vremea</h2>
-            <span class="muted small">Actualizat la 14:20</span>
+            <span class="muted small">Actualizat la {{ora}}</span>
           </div>
 
           <form class="search-form" action="/home" method="get">
@@ -105,7 +105,7 @@
           </div>
           <ul class="weather-details">
             <li>
-              <span class="muted">Vânt</span>{{ (vreme.wind.speed *3.6) |
+              <span class="muted">Vânt</span>{{ (vreme.wind.speed * 3.6) |
               round(1)}} km/h
             </li>
             <li>
@@ -113,21 +113,20 @@
             </li>
             <li>
               <span class="muted">Min / Max</span>{{vreme.main.temp_min |
-              round(1)}} {{vreme.main.temp_max | round(1)}} °C
+              round(1)}} / {{vreme.main.temp_max | round(1)}} °C
             </li>
           </ul>
           <ul class="forecast">
-            {% for ziua,valori in temperaturi_forecast.items() %}
+            {% for ziua, valori in temperaturi_forecast.items() %}
             <li>
               <span>{{ziua}}</span><span class="fc-icon">☀️</span
               ><span
-                >{{valori.temp_max}}
-                <span class="muted">{{valori.temp_min}}</span></span
+                >{{valori.max}}
+                <span class="muted">{{valori.min}}</span></span
               >
             </li>
             {% endfor %}
           </ul>
-
           {% elif eroare %}
           <p class="muted">{{ eroare }}</p>
           {% endif %}
