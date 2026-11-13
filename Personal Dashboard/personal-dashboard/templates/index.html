@@ -170,26 +170,12 @@
           {% endif %}
 
           <ul class="forecast">
+            {% for ziua,valori in temperaturi_forecast.items() %}
             <li>
-              <span>Joi</span><span class="fc-icon">☀️</span
-              ><span>14° <span class="muted">5°</span></span>
-            </li>
-            <li>
-              <span>Vin</span><span class="fc-icon">🌤️</span
-              ><span>13° <span class="muted">6°</span></span>
-            </li>
-            <li>
-              <span>Sâm</span><span class="fc-icon">🌧️</span
-              ><span>9° <span class="muted">4°</span></span>
-            </li>
-            <li>
-              <span>Dum</span><span class="fc-icon">🌧️</span
-              ><span>8° <span class="muted">3°</span></span>
-            </li>
-            <li>
-              <span>Lun</span><span class="fc-icon">☁️</span
-              ><span>10° <span class="muted">2°</span></span>
-            </li>
+              <span>{{ziua}}</span><span class="fc-icon">☀️</span
+              ><span>{{valori.temp_max}}<span class="muted">{{valori.temp_min}}</span></span>
+            </li>           
+            {% endfor %}
           </ul>
         </article>
 

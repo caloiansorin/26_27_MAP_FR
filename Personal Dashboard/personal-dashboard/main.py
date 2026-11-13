@@ -27,6 +27,34 @@ def obtine_vremea(oras):
     raspuns.raise_for_status()
     return raspuns.json()
 
+def obtine_prognoza(oras):
+    url = "https://api.openweathermap.org/data/2.5/forecast"
+    params = {
+        "q": oras,
+        "appid": CHEIE_OPEN_WEATHER,
+        "units": "metric",
+        "lang": "ro",
+    }
+    raspuns = requests.get(url, params=params, timeout=5)
+    raspuns.raise_for_status()
+    return raspuns.json()
+
+def calculeaza_temperatura(zile):
+    rezultate = {}
+    for ziua, intervale in zile.items():
+        temperatura_minima = []
+        temperatura_maxima = []
+        for x in intervale:
+            temperatura_minima.append(x["main"]["temp_min"])
+            temperatura_maxima.append(x["main"]["temp_max"])
+        media_minima = sum(temperatura_minima) / len(temperatura_minima)
+        medie_maxima = sum(temperatura_maxima) / len(temperatura_maxima)
+        rezultate[ziua] = {
+            "temp_min": round(media_minima, 1),
+            "temp_max": round(medie_maxima, 1),
+        }
+    return rezultate
+
 templates = Jinja2Templates(directory="templates")
 
 def salut(ora):
@@ -42,19 +70,40 @@ def radacina():
     """Ruta / ne trimite direct la /home."""
     return RedirectResponse("/home")
 
+zile_saptamana = [
+    "Luni",
+    "Marti",
+    "Miercuri",
+    "Joi",
+    "Vineri",
+    "Sambata",
+    "Duminica"
+]
 
 @app.get("/home")
 def home(request: Request):
     acum = datetime.now()
     ora = acum.strftime("%H:%M")
     mesaj = salut(acum.hour)
-    oras = request.query_params.get("oras", "Iasi")
+    oras = request.query_params.get("oras", "Bacău")
     try:
         vreme = obtine_vremea(oras)
+        prognoza = obtine_prognoza(oras)
+        zile = {}
+        for x in prognoza["list"]:
+            data = datetime.strptime(x["dt_txt"], "%Y-%m-%d %H:%M:%S")
+            ziua = zile_saptamana[data.weekday()]
+            if ziua not in zile:
+                zile[ziua] = []
+            zile[ziua].append(x)
+        temperaturi_forecast = calculeaza_temperatura(zile)
+        temperaturi_forecast = dict(list(temperaturi_forecast.items())[1:6])
+        for x, y in temperaturi_forecast.items():
+            print(x, y["temp_min"], "|", y["temp_max"])
         eroare = None
     except requests.exceptions.RequestException as e:
         vreme = None
-        eroare = f"Eroare la obtinerea vremii: {e}"
+        eroare = f"Eroare la obținerea vremii: {e}"
 
     return templates.TemplateResponse(
         request,
@@ -64,7 +113,8 @@ def home(request: Request):
             "salut": mesaj,
             "vreme": vreme,
             "eroare": eroare,
-            "oras": oras
+            "oras": oras,
+            "temperaturi_forecast": temperaturi_forecast,
         },
     )
 
@@ -73,5 +123,4 @@ def home(request: Request):
 def stil():
 
     return FileResponse("templates/style.css")
-
  
