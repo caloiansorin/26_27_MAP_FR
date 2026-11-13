@@ -15,7 +15,7 @@
       <nav class="nav">
         <a href="/home" class="active">Acasă</a>
       </nav>
-      <div class="clock">14:32</div>
+      <div class="clock">{{ora}}</div>
     </header>
 
     <main class="container">
@@ -29,11 +29,11 @@
         <article class="card card-tasks">
           <div class="card-header">
             <h2>Sarcinile zilei</h2>
-            <span class="muted">2 din 5 finalizate</span>
+            <span class="muted">{{finalizate}} / {{total}}</span>
           </div>
 
           <div class="progress">
-            <div class="progress-bar" style="width: 40%"></div>
+          <div class="progress-bar" style="width: {{progres}}%"></div>
           </div>
 
           <form class="task-form" action="/sarcini/adauga" method="post">
@@ -52,86 +52,24 @@
           </form>
 
           <ul class="task-list">
-            <li class="task done">
-              <form action="/sarcini/1/bifeaza" method="post">
+            {% for id, sarcina in sarcini.items() %}
+            <li class="task {% if sarcina.finalizata %}done{% endif %}">
+              <form action="/sarcini/{{id}}/bifeaza" method="post">
                 <button type="submit" class="check" aria-label="Bifează">
-                  ✓
+                  {% if sarcina.finalizata %}✓{% endif %}
                 </button>
               </form>
-              <span class="task-title"
-                >Citește capitolul 3 la Baze de date</span
-              >
-              <span class="badge badge-medie">Medie</span>
-              <form action="/sarcini/1/sterge" method="post">
+              <span class="task-title">{{sarcina.titlu}}</span>
+              <span class="badge badge-{{sarcina.prioritate}}">
+                {{sarcina.prioritate | capitalize}}
+              </span>
+              <form action="/sarcini/{{id}}/sterge" method="post">
                 <button type="submit" class="delete" aria-label="Șterge">
                   ✕
                 </button>
               </form>
             </li>
-            <li class="task done">
-              <form action="/sarcini/2/bifeaza" method="post">
-                <button type="submit" class="check" aria-label="Bifează">
-                  ✓
-                </button>
-              </form>
-              <span class="task-title">Trimite tema la Programare Web</span>
-              <span class="badge badge-mare">Mare</span>
-              <form action="/sarcini/2/sterge" method="post">
-                <button type="submit" class="delete" aria-label="Șterge">
-                  ✕
-                </button>
-              </form>
-            </li>
-            <li class="task">
-              <form action="/sarcini/3/bifeaza" method="post">
-                <button
-                  type="submit"
-                  class="check"
-                  aria-label="Bifează"
-                ></button>
-              </form>
-              <span class="task-title"
-                >Pregătește prezentarea pentru seminar</span
-              >
-              <span class="badge badge-mare">Mare</span>
-              <form action="/sarcini/3/sterge" method="post">
-                <button type="submit" class="delete" aria-label="Șterge">
-                  ✕
-                </button>
-              </form>
-            </li>
-            <li class="task">
-              <form action="/sarcini/4/bifeaza" method="post">
-                <button
-                  type="submit"
-                  class="check"
-                  aria-label="Bifează"
-                ></button>
-              </form>
-              <span class="task-title">Cumpărături</span>
-              <span class="badge badge-mica">Mică</span>
-              <form action="/sarcini/4/sterge" method="post">
-                <button type="submit" class="delete" aria-label="Șterge">
-                  ✕
-                </button>
-              </form>
-            </li>
-            <li class="task">
-              <form action="/sarcini/5/bifeaza" method="post">
-                <button
-                  type="submit"
-                  class="check"
-                  aria-label="Bifează"
-                ></button>
-              </form>
-              <span class="task-title">Sală, ora 19:00</span>
-              <span class="badge badge-medie">Medie</span>
-              <form action="/sarcini/5/sterge" method="post">
-                <button type="submit" class="delete" aria-label="Șterge">
-                  ✕
-                </button>
-              </form>
-            </li>
+            {% endfor %}
           </ul>
         </article>
 
@@ -147,48 +85,52 @@
               type="text"
               name="oras"
               placeholder="Caută oraș..."
-              value="București"
+              value="{{oras}}"
             />
             <button type="submit" class="btn">Caută</button>
           </form>
-
+          {% if vreme %}
           <div class="weather-now">
-            <div class="weather-icon">⛅</div>
+            <img
+              src="https://openweathermap.org/img/wn/{{vreme.weather[0].icon}}@2x.png"
+              alt="Weather icon"
+            />
             <div>
-              <div class="weather-temp">12°</div>
-              <div class="weather-desc">Parțial noros</div>
-              <div class="muted">București, România</div>
+              <div class="weather-temp">{{vreme.main.temp | round(1)}}</div>
+              <div class="weather-desc">
+                {{vreme.weather[0].description | capitalize}}
+              </div>
+              <div class="muted">{{vreme.name}}, {{vreme.sys.country}}</div>
             </div>
           </div>
-
           <ul class="weather-details">
-            <li><span class="muted">Vânt</span> 14 km/h</li>
-            <li><span class="muted">Umiditate</span> 68%</li>
-            <li><span class="muted">Min / Max</span> 6° / 14°</li>
+            <li>
+              <span class="muted">Vânt</span>{{ (vreme.wind.speed *3.6) |
+              round(1)}} km/h
+            </li>
+            <li>
+              <span class="muted">Umiditate</span> {{vreme.main.humidity}}%
+            </li>
+            <li>
+              <span class="muted">Min / Max</span>{{vreme.main.temp_min |
+              round(1)}} {{vreme.main.temp_max | round(1)}} °C
+            </li>
+          </ul>
+          <ul class="forecast">
+            {% for ziua,valori in temperaturi_forecast.items() %}
+            <li>
+              <span>{{ziua}}</span><span class="fc-icon">☀️</span
+              ><span
+                >{{valori.temp_max}}
+                <span class="muted">{{valori.temp_min}}</span></span
+              >
+            </li>
+            {% endfor %}
           </ul>
 
-          <ul class="forecast">
-            <li>
-              <span>Joi</span><span class="fc-icon">☀️</span
-              ><span>14° <span class="muted">5°</span></span>
-            </li>
-            <li>
-              <span>Vin</span><span class="fc-icon">🌤️</span
-              ><span>13° <span class="muted">6°</span></span>
-            </li>
-            <li>
-              <span>Sâm</span><span class="fc-icon">🌧️</span
-              ><span>9° <span class="muted">4°</span></span>
-            </li>
-            <li>
-              <span>Dum</span><span class="fc-icon">🌧️</span
-              ><span>8° <span class="muted">3°</span></span>
-            </li>
-            <li>
-              <span>Lun</span><span class="fc-icon">☁️</span
-              ><span>10° <span class="muted">2°</span></span>
-            </li>
-          </ul>
+          {% elif eroare %}
+          <p class="muted">{{ eroare }}</p>
+          {% endif %}
         </article>
 
         <!-- ============ CURS VALUTAR ============ -->
