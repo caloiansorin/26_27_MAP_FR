@@ -147,25 +147,27 @@
               type="text"
               name="oras"
               placeholder="Caută oraș..."
-              value="București"
+              value="{{oras}}"
             />
             <button type="submit" class="btn">Caută</button>
           </form>
-
+          {% if vreme %}
           <div class="weather-now">
-            <div class="weather-icon">⛅</div>
+            <img src = "https://openweathermap.org/img/wn/{{vreme.weather[0].icon}}@2x.png" alt="Weather icon">
+          
             <div>
-              <div class="weather-temp">12°</div>
-              <div class="weather-desc">Parțial noros</div>
-              <div class="muted">București, România</div>
+              <div class="weather-temp">{{vreme.main.temp | round(1)}}</div>
+              <div class="weather-desc">{{vreme.weather[0].description}}</div>
+              <div class="muted">{{vreme.name}}, {{vreme.sys.country}}</div>
             </div>
           </div>
 
           <ul class="weather-details">
-            <li><span class="muted">Vânt</span> 14 km/h</li>
-            <li><span class="muted">Umiditate</span> 68%</li>
-            <li><span class="muted">Min / Max</span> 6° / 14°</li>
+            <li><span class="muted">Vânt</span> {{(vreme.wind.speed *3.6) | round(2)}} km/h</li>
+            <li><span class="muted">Umiditate</span> {{vreme.main.humidity}} %</li>
+            <li><span class="muted">Min / Max</span> {{vreme.main.temp_min}} / {{vreme.main.temp_max}}</li>
           </ul>
+          {% endif %}
 
           <ul class="forecast">
             <li>
