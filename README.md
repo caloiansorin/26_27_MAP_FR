@@ -1,3 +1,5 @@
+# 26_27_MAP_FR
+Participare - Budau-Madalina-Gabriela
 # Repo Metode avansate de programare
 ## Despre disciplina
 Este un repo destinat activitatilor de laboror din cadrul disciplinei **Metode avansate de programare**
