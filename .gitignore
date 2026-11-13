@@ -1,4 +1,5 @@
 .env
 .vscode
 Starea_vremii/__pycache__/
-Starea_vremii/vreme.db
+Personal Dashboard/personal-dashboard/__pycache__
+Personal Dashboard/personal-dashboard/.env
