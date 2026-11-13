@@ -6,6 +6,7 @@ from fastapi.templating import Jinja2Templates
 from dotenv import load_dotenv
 import os
 import time
+from datetime import datetime
 
 load_dotenv()
 
@@ -13,6 +14,13 @@ app = FastAPI()
 
 templates = Jinja2Templates(directory="templates")
 
+def salut(ora):
+    if ora < 12:
+        return "Buna dimineata!"
+    elif ora < 18:
+        return "Buna ziua!"
+    else:
+        return "Buna seara!"
 
 @app.get("/")
 def radacina():
@@ -22,10 +30,16 @@ def radacina():
 
 @app.get("/home")
 def home(request: Request):
+    acum = datetime.now()
+    ora = acum.strftime("%H:%M")
+    mesaj = salut(acum.hour)
     return templates.TemplateResponse(
         request,
         "index.html",
-        {},
+        {
+            "ora": ora,
+            "salut": mesaj
+        },
     )
 
 
