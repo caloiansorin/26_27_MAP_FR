@@ -24,6 +24,8 @@
     <button type="submit" class="btn btn-primary">Adaugă</button>
   </form>
 
+  <!-- Verificăm dacă lista de sarcini are elemente -->
+  {% if sarcini and sarcini | length > 0 %}
   <ul class="task-list">
     {% for sarcina in sarcini %}
     <li class="task {% if sarcina.done %}done{% endif %}">
@@ -40,4 +42,8 @@
     </li>
     {% endfor %}
   </ul>
+  {% else %}
+  <!-- Mesajul afișat când nu există nicio sarcină -->
+  <p class="muted" style="text-align: center; padding: 1.5rem 0;">Nu există nicio sarcină. Adaugă una nouă!</p>
+  {% endif %}
 </article>
