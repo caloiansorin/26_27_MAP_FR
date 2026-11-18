@@ -1,7 +1,7 @@
 <article class="card card-weather">
   <div class="card-header">
     <h2>Vremea</h2>
-    <span class="muted small">Actualizat la 14:20</span>
+    <span class="muted small">Actualizat la {{ ora_actualizarii }}</span>
   </div>
 
   <form class="search-form" action="/home" method="get">
@@ -29,7 +29,7 @@
   <ul class="forecast">
     {% for ziua, valori in temperaturi_forecast.items() %}
     <li>
-      <span>{{ziua}}</span><span class="fc-icon">☀️</span><span>{{valori.temp_max}}<span class="muted">{{valori.temp_min}}</span></span>
+      <span>{{ziua}}</span><span class="fc-icon">☀️</span><span>{{valori.temp_max}}<span class="muted">/{{valori.temp_min}}</span></span>
     </li>           
     {% endfor %}
   </ul>

@@ -179,6 +179,9 @@ def home(request: Request):
     try:
         data_vreme = obtine_vremea(info_oras["latitude"], info_oras["longitude"])
         data_prognoza = obtine_prognoza(info_oras["latitude"], info_oras["longitude"])
+
+        # Salvam ora exacta a actualizarii
+        ora_actualizarii = datetime.now().strftime("%H:%M")
         
         curent = data_vreme.get("current", {})
         vreme = {
@@ -207,15 +210,21 @@ def home(request: Request):
         temperaturi_forecast = {}
         for i in range(1, min(6, len(zile_forecast))):
             data_zi = datetime.strptime(zile_forecast[i], "%Y-%m-%d")
-            nume_zi = zile_saptamana[data_zi.weekday()]
+            nume_zi_complet = zile_saptamana[data_zi.weekday()]
+
+            # Pentru un plus estetic, limitez numele zilelor la primele 3 carcatere
+            nume_zi = nume_zi_complet[:3]
+
+            # Tot imbunatatire estetica, rotunjesc temperaturile la numar intreg
             temperaturi_forecast[nume_zi] = {
-                "temp_max": t_max[i],
-                "temp_min": t_min[i]
+                "temp_max": round(t_max[i]) if t_max[i] is not None else 0,
+                "temp_min": round(t_min[i]) if t_min[i] is not None else 0
             }
 
         eroare = None
     except requests.exceptions.RequestException as e:
         vreme = None
+        ora_actualizarii = "--:--"
         temperaturi_forecast = {}
         eroare = f"Eroare la obținerea vremii: {e}"
 
@@ -224,6 +233,7 @@ def home(request: Request):
         "index.html",
         {
             "ora": ora,
+            "ora_actualizarii": ora_actualizarii, # Trimitem ora in sablon
             "salut": mesaj,
             "vreme": vreme,
             "eroare": eroare,
