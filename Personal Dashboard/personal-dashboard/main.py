@@ -1,6 +1,6 @@
 # uvicorn main:app --reload
 
-from fastapi import FastAPI, Request
+from fastapi import FastAPI, Request, Form
 from fastapi.responses import FileResponse, RedirectResponse
 from fastapi.templating import Jinja2Templates
 from dotenv import load_dotenv
@@ -26,6 +26,15 @@ luni_ro = {
     5: "Mai", 6: "Iunie", 7: "Iulie", 8: "August",
     9: "Septembrie", 10: "Octombrie", 11: "Noiembrie", 12: "Decembrie"
 }
+
+# Lista globala care simuleaza baza de date
+sarcini_db = [
+    {"id": 1, "titlu": "Citește capitolul 3 la Baze de date", "prioritate": "medie", "done": True},
+    {"id": 2, "titlu": "Trimite tema la Programare Web", "prioritate": "mare", "done": True},
+    {"id": 3, "titlu": "Pregătește prezentarea pentru seminar", "prioritate": "mare", "done": False},
+    {"id": 4, "titlu": "Cumpărături", "prioritate": "mica", "done": False},
+    {"id": 5, "titlu": "Sală, ora 19:00", "prioritate": "medie", "done": False},
+]
 
 def obtine_vremea(oras):
     url = "https://api.openweathermap.org/data/2.5/weather"
@@ -106,15 +115,6 @@ def home(request: Request):
 
     data_curenta = f"{ziua_saptamanii}, {ziua_lunii} {luna} {anul}"
 
-    # Lista simpla de sarcini trimisa din backend
-    sarcini = [
-        {"id": 1, "titlu": "Citește capitolul 3 la Baze de date", "prioritate": "medie", "done": True},
-        {"id": 2, "titlu": "Trimite tema la Programare Web", "prioritate": "mare", "done": True},
-        {"id": 3, "titlu": "Pregătește prezentarea pentru seminar", "prioritate": "mare", "done": False},
-        {"id": 4, "titlu": "Cumpărături", "prioritate": "mica", "done": False},
-        {"id": 5, "titlu": "Sală, ora 19:00", "prioritate": "medie", "done": False},
-    ]
-
     oras = request.query_params.get("oras", "Bacău")
     try:
         vreme = obtine_vremea(oras)
@@ -146,13 +146,45 @@ def home(request: Request):
             "oras": oras,
             "temperaturi_forecast": temperaturi_forecast,
             "data_curenta": data_curenta, # Trimitem data in sablon
-            "sarcini": sarcini, # Trimitem lista de sarcini catre sablon
+            "sarcini": sarcini_db, # Trimitem lista de sarcini catre sablon
         },
     )
 
+# --- RUTA DE ADAUGARE SARCINĂ ---
+@app.post("/sarcini/adauga")
+def adauga_sarcina(titlu: str = Form(...), prioritate: str = Form(...)):
+    # Generăm un ID unicat bazat pe lungimea listei + 1
+    nou_id = max([s["id"] for s in sarcini_db], default=0) + 1
+    
+    noua_sarcina = {
+        "id": nou_id,
+        "titlu": titlu,
+        "prioritate": prioritate,
+        "done": False
+    }
+    
+    sarcini_db.append(noua_sarcina)
+    
+    # Redirecționăm înapoi către pagina de home pentru a vedea modificarea
+    return RedirectResponse("/home", status_code=303)
+
+# --- RUTA DE BIFARE SARCINĂ ---
+@app.post("/sarcini/{sarcina_id}/bifeaza")
+def bifeaza_sarcina(sarcina_id: int):
+    for sarcina in sarcini_db:
+        if sarcina["id"] == sarcina_id:
+            sarcina["done"] = not sarcina["done"]
+            break
+    return RedirectResponse("/home", status_code=303)
+
+# --- RUTA DE ȘTERGERE SARCINĂ ---
+@app.post("/sarcini/{sarcina_id}/sterge")
+def sterge_sarcina(sarcina_id: int):
+    global sarcini_db
+    sarcini_db = [s for s in sarcini_db if s["id"] != sarcina_id]
+    return RedirectResponse("/home", status_code=303)
 
 @app.get("/style.css")
 def stil():
 
     return FileResponse("templates/style.css")
- 
