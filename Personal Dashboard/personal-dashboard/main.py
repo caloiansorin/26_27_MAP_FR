@@ -15,6 +15,18 @@ NUME = os.getenv("NUME")
 
 app = FastAPI()
 
+# Adaugam dictionare pentru traducere zile si luni
+zile_saptamana_ro = {
+    0: "Luni", 1: "Marti", 2: "Miercuri", 3: "Joi",
+    4: "Vineri", 5: "Sambata", 6: "Duminica"
+}
+
+luni_ro = {
+    1: "Ianuarie", 2: "Februarie", 3: "Martie", 4: "Aprilie",
+    5: "Mai", 6: "Iunie", 7: "Iulie", 8: "August",
+    9: "Septembrie", 10: "Octombrie", 11: "Noiembrie", 12: "Decembrie"
+}
+
 def obtine_vremea(oras):
     url = "https://api.openweathermap.org/data/2.5/weather"
     params = {
@@ -85,6 +97,15 @@ def home(request: Request):
     acum = datetime.now()
     ora = acum.strftime("%H:%M")
     mesaj = salut(acum.hour)
+
+    # Generare data in backend
+    ziua_saptamanii = zile_saptamana_ro[acum.weekday()]
+    ziua_lunii = acum.day
+    luna = luni_ro[acum.month]
+    anul = acum.year
+
+    data_curenta = f"{ziua_saptamanii}, {ziua_lunii} {luna} {anul}"
+
     oras = request.query_params.get("oras", "Bacău")
     try:
         vreme = obtine_vremea(oras)
@@ -115,6 +136,7 @@ def home(request: Request):
             "eroare": eroare,
             "oras": oras,
             "temperaturi_forecast": temperaturi_forecast,
+            "data_curenta": data_curenta, # Trimitem data in sablon
         },
     )
 
