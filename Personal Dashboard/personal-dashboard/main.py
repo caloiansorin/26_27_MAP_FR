@@ -5,6 +5,7 @@ from fastapi.responses import FileResponse, RedirectResponse
 from fastapi.templating import Jinja2Templates
 from dotenv import load_dotenv
 import os
+import sqlite3
 import time
 from datetime import datetime
 import requests
@@ -14,6 +15,24 @@ CHEIE_OPEN_WEATHER = os.getenv("OPEN_WEATHER_API_KEY")
 NUME = os.getenv("NUME")
 
 app = FastAPI()
+
+DB_FILE = "sarcini.db"
+
+def init_db():
+    conn = sqlite3.connect(DB_FILE)
+    cursor = conn.cursor()
+    cursor.execute("""
+        CREATE TABLE IF NOT EXISTS sarcini (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            titlu TEXT NOT NULL,
+            prioritate TEXT NOT NULL,
+            done BOOLEAN NOT NULL DEFAULT 0
+        )
+    """)
+    conn.commit()
+    conn.close()
+
+init_db()
 
 # Adaugam dictionare pentru traducere zile si luni
 zile_saptamana_ro = {
@@ -27,14 +46,28 @@ luni_ro = {
     9: "Septembrie", 10: "Octombrie", 11: "Noiembrie", 12: "Decembrie"
 }
 
-# Lista globala care simuleaza baza de date
-sarcini_db = [
-    {"id": 1, "titlu": "Citește capitolul 3 la Baze de date", "prioritate": "medie", "done": True},
-    {"id": 2, "titlu": "Trimite tema la Programare Web", "prioritate": "mare", "done": True},
-    {"id": 3, "titlu": "Pregătește prezentarea pentru seminar", "prioritate": "mare", "done": False},
-    {"id": 4, "titlu": "Cumpărături", "prioritate": "mica", "done": False},
-    {"id": 5, "titlu": "Sală, ora 19:00", "prioritate": "medie", "done": False},
-]
+# Preluam sarcinile ordonate direct din baza de date
+def obtine_sarcini_din_db():
+    conn = sqlite3.connect(DB_FILE)
+    conn.row_factory = sqlite3.Row  # Ne permite să accesăm coloanele după nume
+    cursor = conn.cursor()
+    
+    # Ordonare: întâi cele nefinalizate (done = 0), apoi după prioritate
+    cursor.execute("""
+        SELECT * FROM sarcini 
+        ORDER BY done ASC, 
+        CASE prioritate 
+            WHEN 'mare' THEN 1 
+            WHEN 'medie' THEN 2 
+            WHEN 'mica' THEN 3 
+            ELSE 4 
+        END ASC
+    """)
+    rows = cursor.fetchall()
+    conn.close()
+    
+    # Convertim rândurile în dicționare obișnuite
+    return [dict(row) for row in rows]
 
 def obtine_vremea(oras):
     url = "https://api.openweathermap.org/data/2.5/weather"
@@ -115,12 +148,8 @@ def home(request: Request):
 
     data_curenta = f"{ziua_saptamanii}, {ziua_lunii} {luna} {anul}"
 
-    # Definim o ierarhie pentru prioritati si sortam lista de sarcini
-    prioritate_valori = {"mare": 1, "medie": 2, "mica": 3}
-    sarcini_ordonate = sorted(
-        sarcini_db,
-        key=lambda s: (s["done"], prioritate_valori.get(s["prioritate"], 4))
-    )
+    # Preluam sarcinile direct din baza de date SQLite
+    sarcini_ordonate = obtine_sarcini_din_db()
 
     oras = request.query_params.get("oras", "Bacău")
     try:
@@ -160,17 +189,14 @@ def home(request: Request):
 # --- RUTA DE ADAUGARE SARCINĂ ---
 @app.post("/sarcini/adauga")
 def adauga_sarcina(titlu: str = Form(...), prioritate: str = Form(...)):
-    # Generăm un ID unicat bazat pe lungimea listei + 1
-    nou_id = max([s["id"] for s in sarcini_db], default=0) + 1
-    
-    noua_sarcina = {
-        "id": nou_id,
-        "titlu": titlu,
-        "prioritate": prioritate,
-        "done": False
-    }
-    
-    sarcini_db.append(noua_sarcina)
+    conn = sqlite3.connect(DB_FILE)
+    cursor = conn.cursor()
+    cursor.execute(
+        "INSERT INTO sarcini (titlu, prioritate, done) VALUES (?, ?, ?)",
+        (titlu, prioritate, False)
+    )
+    conn.commit()
+    conn.close()
     
     # Redirecționăm înapoi către pagina de home pentru a vedea modificarea
     return RedirectResponse("/home", status_code=303)
@@ -178,17 +204,22 @@ def adauga_sarcina(titlu: str = Form(...), prioritate: str = Form(...)):
 # --- RUTA DE BIFARE SARCINĂ ---
 @app.post("/sarcini/{sarcina_id}/bifeaza")
 def bifeaza_sarcina(sarcina_id: int):
-    for sarcina in sarcini_db:
-        if sarcina["id"] == sarcina_id:
-            sarcina["done"] = not sarcina["done"]
-            break
+    conn = sqlite3.connect(DB_FILE)
+    cursor = conn.cursor()
+    # Inversăm starea curentă a lui 'done' (1 devine 0, 0 devine 1)
+    cursor.execute("UPDATE sarcini SET done = NOT done WHERE id = ?", (sarcina_id,))
+    conn.commit()
+    conn.close()
     return RedirectResponse("/home", status_code=303)
 
 # --- RUTA DE ȘTERGERE SARCINĂ ---
 @app.post("/sarcini/{sarcina_id}/sterge")
 def sterge_sarcina(sarcina_id: int):
-    global sarcini_db
-    sarcini_db = [s for s in sarcini_db if s["id"] != sarcina_id]
+    conn = sqlite3.connect(DB_FILE)
+    cursor = conn.cursor()
+    cursor.execute("DELETE FROM sarcini WHERE id = ?", (sarcina_id,))
+    conn.commit()
+    conn.close()
     return RedirectResponse("/home", status_code=303)
 
 @app.get("/style.css")
