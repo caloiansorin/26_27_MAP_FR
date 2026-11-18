@@ -142,6 +142,43 @@ def salut(ora):
     else:
         return "Buna seara!"
 
+def obtine_curs_valutar():
+    # Folosim noul endpoint v2 de la api.frankfurter.dev
+    url = "https://api.frankfurter.dev/v2/rates"
+    params = {
+        "base": "RON",
+        "quotes": "EUR,USD,GBP"
+    }
+    try:
+        raspuns = requests.get(url, params=params, timeout=5)
+        raspuns.raise_for_status()
+        date = raspuns.json()
+        
+        rates = {}
+        data_actualizarii = "-"
+        
+        if isinstance(date, list) and len(date) > 0:
+            for item in date:
+                quote = item.get("quote")
+                rate = item.get("rate")
+                if quote and rate:
+                    # Deoarece baza este RON, rate-ul primit ne spune câți EUR/USD/GBP obținem pe 1 RON.
+                    # Noi vrem inversul (câți RON costă 1 EUR/USD/GBP), adică 1 / rate.
+                    rates[quote] = round(1 / rate, 4)
+                if "date" in item:
+                    data_actualizarii = item.get("date")
+        
+        return {
+            "EUR": rates.get("EUR", 4.9700),
+            "USD": rates.get("USD", 4.6000),
+            "GBP": rates.get("GBP", 5.8000),
+            "data": data_actualizarii
+        }
+    except Exception as e:
+        print(f"Eroare curs valutar: {e}")
+        # Valori de fallback în caz de eroare de rețea
+        return {"EUR": 4.97, "USD": 4.60, "GBP": 5.80, "data": "Indisponibil"}
+
 @app.get("/")
 def radacina():
     """Ruta / ne trimite direct la /home."""
@@ -176,6 +213,10 @@ def home(request: Request):
 
     nume_oras_cautat = request.query_params.get("oras", "Iasi")
     info_oras = obtine_coordonate_oras(nume_oras_cautat)
+
+    # Preluare curs valutar
+    curs_valutar = obtine_curs_valutar()
+
     try:
         data_vreme = obtine_vremea(info_oras["latitude"], info_oras["longitude"])
         data_prognoza = obtine_prognoza(info_oras["latitude"], info_oras["longitude"])
@@ -241,6 +282,7 @@ def home(request: Request):
             "temperaturi_forecast": temperaturi_forecast,
             "data_curenta": data_curenta, # Trimitem data in sablon
             "sarcini": sarcini_ordonate, # Trimitem lista de sarcini ordonata catre sablon
+            "curs_valutar": curs_valutar, # Trimitem cursurile valutare in sablon
         },
     )
 
