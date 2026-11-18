@@ -1,19 +1,16 @@
 <article class="card card-holiday">
   <div class="card-header">
-    <h2>Următoarea sărbătoare</h2>
+    <h2>Următoarea Sărbătoare</h2>
+    <span class="muted small">Nager.Date (România)</span>
   </div>
-  <div class="holiday-main">
-    <div class="countdown">
-      <span class="countdown-num">19</span>
-      <span class="muted">zile</span>
-    </div>
-    <div>
-      <div class="holiday-name">Sfântul Andrei</div>
-      <div class="muted">Luni, 30 noiembrie 2026</div>
-    </div>
+
+  <div class="holiday-content" style="margin-top: 1rem; text-align: center;">
+    <p style="font-size: 1.2rem; font-weight: bold; color: var(--accent-color, #2563eb);">
+      🎉 {{ urmatoarea_sarbatoare.nume }}
+    </p>
+    <span class="muted" style="display: block; margin-top: 0.5rem; font-size: 0.95rem;">
+      Data: <strong>{{ urmatoarea_sarbatoare.data }}</strong> 
+      (<span style="color: #059669; font-weight: 500;">{{ urmatoarea_sarbatoare.text_zile }}</span>)
+    </span>
   </div>
-  <ul class="holiday-list">
-    <li><span>Ziua Națională a României</span><span class="muted">1 dec</span></li>
-    <li><span>Crăciunul</span><span class="muted">25 dec</span></li>
-  </ul>
 </article>
