@@ -1,5 +1,5 @@
-# Titlu Proiect
-Acesta este un README Template, pentru a putea fi importat si integrat de catre oricine, atat in proiectele academice cat si cele profesionale.
+# Home Hub
+Acesta este un dashboard personal, util pentru organizarea informatiei in cadrul familiei.
 
 ---
 
@@ -19,14 +19,16 @@ Acesta este un README Template, pentru a putea fi importat si integrat de catre 
 ---
 
 ## Despre
-Mai multe detalii, cat mai succinte dar suficient de descriptive despre **ce problema rezolva acest proiect**.
+Un dashboard personal capteaza informatiile relevante atat pentru utilizator cat si familia acestuia, facilitand organizarea si sincronizarea ei intr-un singur loc.
 
 ### Tehnologii utilizate
-Framework-uri, librarii, tool-uri utilizate pentru a crea acest proiect.
+Acest proiect este un web-app, scris in **Python**, ce face uz de **FastAPI, Jinja2 si requests**, incarcand dinamic, fara JavaScript, informatiile captate prin intermediul API-urilor, intr-o pagina html.
 
-*   [Tech 1](https://url-to-tech.com)
-*   [Tech 2](https://url-to-tech.com)
-*   [Tech 3](https://url-to-tech.com)
+Pentru simplificare, am cautat API-uri care sa nu necesite autentificare, si care sa poata fi utilizate gratuit, si anume:
+
+*   [Vreme](https://url-to-tech.com)
+*   [Curs Valutar](https://url-to-tech.com)
+*   [Sarbatori](https://url-to-tech.com)
 
 ---
 
@@ -35,8 +37,7 @@ Pasii pe care utilizatorul trebuie sa ii urmeze pentru a avea pe setup-ul local 
 
 ### Cerinte
 Indicatii cu privire la ce aplicatii, unelte, dependinte trebuiesc instalate inainte de proiect.
-*   `npm` (v6.0 or higher)
-*   `Node.js` (v14.0 or higher)
+*   `python` (v3.9 or higher)
 
 ### Instalare
 Pasii necesari pentru a putea instala aplicatia noastra
@@ -51,7 +52,7 @@ Pasii necesari pentru a putea instala aplicatia noastra
    ```
 3. Install dependencies:
    ```bash
-   npm install
+   pip install
    ```
 
 ---
@@ -77,7 +78,7 @@ Puteti urmari o lista mai detailata a noilor functionalitati propuse sau bug-uri
 ---
 
 ## Contributii
-Orice contributie este **binevenita**! Pentru mai multe detalii ca invitam sa parcurgeti micul nostru ghid descris in [CONTRIBUTING](CONTRIBUTING.md)
+Orice contributie este **binevenita**! Pentru mai multe detalii legate de modalitatile de contributie, va invitam sa parcurgeti micul nostru ghid descris in [CONTRIBUTING](CONTRIBUTING.md)
 
 ---
 
@@ -87,5 +88,4 @@ Distribuit sub licenta MIT. Pentru mai multe informatii, accesati fisierul [LICE
 ---
 
 ## Contact
-Adina Vornicu - adina.vornicu25 [at] student.ub.ro
-[https://github.com/adinanistor/proiect](https://github.com/adinanistor/proiect)
+Adina & Constantin Nistor - nistor [at] domain . ro
