@@ -46,6 +46,13 @@ luni_ro = {
     9: "Septembrie", 10: "Octombrie", 11: "Noiembrie", 12: "Decembrie"
 }
 
+# Variabile globale pentru cache-ul citatului
+cache_citat = {
+    "data": None,
+    "citat": "Cea mai mare glorie nu o obții atunci când nu cazi niciodată, ci atunci când te ridici după fiecare cădere.",
+    "autor": "Confucius"
+}
+
 # Preluam sarcinile ordonate direct din baza de date
 def obtine_sarcini_din_db():
     conn = sqlite3.connect(DB_FILE)
@@ -179,6 +186,38 @@ def obtine_curs_valutar():
         # Valori de fallback în caz de eroare de rețea
         return {"EUR": 4.97, "USD": 4.60, "GBP": 5.80, "data": "Indisponibil"}
 
+def obtine_citat_zilei():
+    global cache_citat
+    azi = datetime.now().strftime("%Y-%m-%d")
+
+    # Dacă am preluat deja citatul astăzi, îl refolosim din memorie (fără apel API)
+    if cache_citat["data"] == azi:
+        return {
+            "citat": cache_citat["citat"],
+            "autor": cache_citat["autor"]
+        }
+
+    # ALtfel, apelam API-ul cel mult odata pe zi
+    url = "https://zenquotes.io/api/today"
+    try:
+        raspuns = requests.get(url, timeout=5)
+        raspuns.raise_for_status()
+        date = raspuns.json()
+        
+        if isinstance(date, list) and len(date) > 0:
+            citat_obj = date[0]
+            # Actualizam cache-ul cu noua zi si noul citat
+            cache_citat["data"] = azi
+            cache_citat["citat"] = citat_obj.get("q", cache_citat["citat"])
+            cache_citat["autor"] = citat_obj.get("a", cache_citat["autor"])
+    except Exception as e:
+        print(f"Eroare citat zilei (se folosește fallback/cache vechi): {e}")
+    
+    return {
+        "citat": cache_citat["citat"],
+        "autor": cache_citat["autor"]
+    }
+
 @app.get("/")
 def radacina():
     """Ruta / ne trimite direct la /home."""
@@ -216,6 +255,9 @@ def home(request: Request):
 
     # Preluare curs valutar
     curs_valutar = obtine_curs_valutar()
+
+    # Preluare citatul zilei
+    citat_zilei = obtine_citat_zilei()
 
     try:
         data_vreme = obtine_vremea(info_oras["latitude"], info_oras["longitude"])
@@ -283,6 +325,7 @@ def home(request: Request):
             "data_curenta": data_curenta, # Trimitem data in sablon
             "sarcini": sarcini_ordonate, # Trimitem lista de sarcini ordonata catre sablon
             "curs_valutar": curs_valutar, # Trimitem cursurile valutare in sablon
+            "citat_zilei": citat_zilei,
         },
     )
 
