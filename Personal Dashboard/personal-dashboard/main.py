@@ -115,6 +115,13 @@ def home(request: Request):
 
     data_curenta = f"{ziua_saptamanii}, {ziua_lunii} {luna} {anul}"
 
+    # Definim o ierarhie pentru prioritati si sortam lista de sarcini
+    prioritate_valori = {"mare": 1, "medie": 2, "mica": 3}
+    sarcini_ordonate = sorted(
+        sarcini_db,
+        key=lambda s: (s["done"], prioritate_valori.get(s["prioritate"], 4))
+    )
+
     oras = request.query_params.get("oras", "Bacău")
     try:
         vreme = obtine_vremea(oras)
@@ -146,7 +153,7 @@ def home(request: Request):
             "oras": oras,
             "temperaturi_forecast": temperaturi_forecast,
             "data_curenta": data_curenta, # Trimitem data in sablon
-            "sarcini": sarcini_db, # Trimitem lista de sarcini catre sablon
+            "sarcini": sarcini_ordonate, # Trimitem lista de sarcini ordonata catre sablon
         },
     )
 
