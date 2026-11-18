@@ -1,11 +1,17 @@
 <article class="card card-tasks">
   <div class="card-header">
     <h2>Sarcinile zilei</h2>
-    <span class="muted">2 din 5 finalizate</span>
+    <span class="muted">
+      {{ sarcini | selectattr('done') | list | length }} din {{ sarcini | length }} finalizate
+    </span>
   </div>
 
+  {% set total = sarcini | length %}
+  {% set gata = sarcini | selectattr('done') | list | length %}
+  {% set procent = (gata / total * 100) | int if total > 0 else 0 %}
+
   <div class="progress">
-    <div class="progress-bar" style="width: 40%"></div>
+    <div class="progress-bar" style="width: {{ procent }}%"></div>
   </div>
 
   <form class="task-form" action="/sarcini/adauga" method="post">
@@ -19,55 +25,19 @@
   </form>
 
   <ul class="task-list">
-    <li class="task done">
-      <form action="/sarcini/1/bifeaza" method="post">
-        <button type="submit" class="check" aria-label="Bifează">✓</button>
+    {% for sarcina in sarcini %}
+    <li class="task {% if sarcina.done %}done{% endif %}">
+      <form action="/sarcini/{{ sarcina.id }}/bifeaza" method="post">
+        <button type="submit" class="check" aria-label="Bifează">
+          {% if sarcina.done %}✓{% endif %}
+        </button>
       </form>
-      <span class="task-title">Citește capitolul 3 la Baze de date</span>
-      <span class="badge badge-medie">Medie</span>
-      <form action="/sarcini/1/sterge" method="post">
+      <span class="task-title">{{ sarcina.titlu }}</span>
+      <span class="badge badge-{{ sarcina.prioritate }}">{{ sarcina.prioritate | capitalize }}</span>
+      <form action="/sarcini/{{ sarcina.id }}/sterge" method="post">
         <button type="submit" class="delete" aria-label="Șterge">✕</button>
       </form>
     </li>
-    <li class="task done">
-      <form action="/sarcini/2/bifeaza" method="post">
-        <button type="submit" class="check" aria-label="Bifează">✓</button>
-      </form>
-      <span class="task-title">Trimite tema la Programare Web</span>
-      <span class="badge badge-mare">Mare</span>
-      <form action="/sarcini/2/sterge" method="post">
-        <button type="submit" class="delete" aria-label="Șterge">✕</button>
-      </form>
-    </li>
-    <li class="task">
-      <form action="/sarcini/3/bifeaza" method="post">
-        <button type="submit" class="check" aria-label="Bifează"></button>
-      </form>
-      <span class="task-title">Pregătește prezentarea pentru seminar</span>
-      <span class="badge badge-mare">Mare</span>
-      <form action="/sarcini/3/sterge" method="post">
-        <button type="submit" class="delete" aria-label="Șterge">✕</button>
-      </form>
-    </li>
-    <li class="task">
-      <form action="/sarcini/4/bifeaza" method="post">
-        <button type="submit" class="check" aria-label="Bifează"></button>
-      </form>
-      <span class="task-title">Cumpărături</span>
-      <span class="badge badge-mica">Mică</span>
-      <form action="/sarcini/4/sterge" method="post">
-        <button type="submit" class="delete" aria-label="Șterge">✕</button>
-      </form>
-    </li>
-    <li class="task">
-      <form action="/sarcini/5/bifeaza" method="post">
-        <button type="submit" class="check" aria-label="Bifează"></button>
-      </form>
-      <span class="task-title">Sală, ora 19:00</span>
-      <span class="badge badge-medie">Medie</span>
-      <form action="/sarcini/5/sterge" method="post">
-        <button type="submit" class="delete" aria-label="Șterge">✕</button>
-      </form>
-    </li>
+    {% endfor %}
   </ul>
 </article>

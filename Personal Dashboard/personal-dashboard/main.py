@@ -106,6 +106,15 @@ def home(request: Request):
 
     data_curenta = f"{ziua_saptamanii}, {ziua_lunii} {luna} {anul}"
 
+    # Lista simpla de sarcini trimisa din backend
+    sarcini = [
+        {"id": 1, "titlu": "Citește capitolul 3 la Baze de date", "prioritate": "medie", "done": True},
+        {"id": 2, "titlu": "Trimite tema la Programare Web", "prioritate": "mare", "done": True},
+        {"id": 3, "titlu": "Pregătește prezentarea pentru seminar", "prioritate": "mare", "done": False},
+        {"id": 4, "titlu": "Cumpărături", "prioritate": "mica", "done": False},
+        {"id": 5, "titlu": "Sală, ora 19:00", "prioritate": "medie", "done": False},
+    ]
+
     oras = request.query_params.get("oras", "Bacău")
     try:
         vreme = obtine_vremea(oras)
@@ -137,6 +146,7 @@ def home(request: Request):
             "oras": oras,
             "temperaturi_forecast": temperaturi_forecast,
             "data_curenta": data_curenta, # Trimitem data in sablon
+            "sarcini": sarcini, # Trimitem lista de sarcini catre sablon
         },
     )
 
