@@ -10,9 +10,9 @@ import time
 from datetime import datetime
 import requests
 
-load_dotenv()
-CHEIE_OPEN_WEATHER = os.getenv("OPEN_WEATHER_API_KEY")
-NUME = os.getenv("NUME")
+#load_dotenv()
+#CHEIE_OPEN_WEATHER = os.getenv("OPEN_WEATHER_API_KEY")
+#NUME = os.getenv("NUME")
 
 app = FastAPI()
 
@@ -69,25 +69,48 @@ def obtine_sarcini_din_db():
     # Convertim rândurile în dicționare obișnuite
     return [dict(row) for row in rows]
 
-def obtine_vremea(oras):
-    url = "https://api.openweathermap.org/data/2.5/weather"
+# Trecem modulul responsabil cu Vremea de la OpenWeather la Open-Meteo APIs.
+# Deoarece Open-Meteo foloseste coordonate pentru locatie, vom include si o functie de conversie
+def obtine_coordonate_oras(nume_oras):
+    url = "https://geocoding-api.open-meteo.com/v1/search"
+    params = {"name": nume_oras, "count": 1, "language": "ro", "format": "json"}
+    try:
+        raspuns = requests.get(url, params=params, timeout=5)
+        raspuns.raise_for_status()
+        date = raspuns.json()
+        if "results" in date and len(date["results"]) > 0:
+            locatie = date["results"][0]
+            return {
+                "name": locatie.get("name"),
+                "country": locatie.get("country", ""),
+                "latitude": locatie.get("latitude"),
+                "longitude": locatie.get("longitude")
+            }
+    except Exception:
+        pass
+    # Valoare de fallback (în caz de eroare sau dacă orașul nu este găsit)
+    return {"name": "Iași", "country": "România", "latitude": 47.1585, "longitude": 27.6014}
+
+def obtine_vremea(lat, lon):
+    url = "https://api.open-meteo.com/v1/forecast"
     params = {
-        "q": oras,
-        "appid": CHEIE_OPEN_WEATHER,
-        "units": "metric",
-        "lang": "ro",
+        "latitude": lat,
+        "longitude": lon,
+        "current": "temperature_2m,relative_humidity_2m,apparent_temperature,wind_speed_10m",
+        "timezone": "auto"
     }
     raspuns = requests.get(url, params=params, timeout=5)
     raspuns.raise_for_status()
     return raspuns.json()
 
-def obtine_prognoza(oras):
-    url = "https://api.openweathermap.org/data/2.5/forecast"
+
+def obtine_prognoza(lat, lon):
+    url = "https://api.open-meteo.com/v1/forecast"
     params = {
-        "q": oras,
-        "appid": CHEIE_OPEN_WEATHER,
-        "units": "metric",
-        "lang": "ro",
+        "latitude": lat,
+        "longitude": lon,
+        "daily": "temperature_2m_max,temperature_2m_min",
+        "timezone": "auto"
     }
     raspuns = requests.get(url, params=params, timeout=5)
     raspuns.raise_for_status()
@@ -151,24 +174,49 @@ def home(request: Request):
     # Preluam sarcinile direct din baza de date SQLite
     sarcini_ordonate = obtine_sarcini_din_db()
 
-    oras = request.query_params.get("oras", "Bacău")
+    nume_oras_cautat = request.query_params.get("oras", "Iasi")
+    info_oras = obtine_coordonate_oras(nume_oras_cautat)
     try:
-        vreme = obtine_vremea(oras)
-        prognoza = obtine_prognoza(oras)
-        zile = {}
-        for x in prognoza["list"]:
-            data = datetime.strptime(x["dt_txt"], "%Y-%m-%d %H:%M:%S")
-            ziua = zile_saptamana[data.weekday()]
-            if ziua not in zile:
-                zile[ziua] = []
-            zile[ziua].append(x)
-        temperaturi_forecast = calculeaza_temperatura(zile)
-        temperaturi_forecast = dict(list(temperaturi_forecast.items())[1:6])
-        for x, y in temperaturi_forecast.items():
-            print(x, y["temp_min"], "|", y["temp_max"])
+        data_vreme = obtine_vremea(info_oras["latitude"], info_oras["longitude"])
+        data_prognoza = obtine_prognoza(info_oras["latitude"], info_oras["longitude"])
+        
+        curent = data_vreme.get("current", {})
+        vreme = {
+            "name": info_oras["name"],
+            "sys": {"country": info_oras.get("country", "")},
+            "main": {
+                "temp": curent.get("temperature_2m"),
+                "humidity": curent.get("relative_humidity_2m"),
+                "temp_min": data_prognoza.get("daily", {}).get("temperature_2m_min", [0])[0],
+                "temp_max": data_prognoza.get("daily", {}).get("temperature_2m_max", [0])[0],
+            },
+            "wind": {
+                "speed": curent.get("wind_speed_10m", 0) / 3.6
+            },
+            "weather": [{
+                "description": "Vreme curentă",
+                "icon": "01d"
+            }]
+        }
+        
+        daily = data_prognoza.get("daily", {})
+        zile_forecast = daily.get("time", [])
+        t_max = daily.get("temperature_2m_max", [])
+        t_min = daily.get("temperature_2m_min", [])
+        
+        temperaturi_forecast = {}
+        for i in range(1, min(6, len(zile_forecast))):
+            data_zi = datetime.strptime(zile_forecast[i], "%Y-%m-%d")
+            nume_zi = zile_saptamana[data_zi.weekday()]
+            temperaturi_forecast[nume_zi] = {
+                "temp_max": t_max[i],
+                "temp_min": t_min[i]
+            }
+
         eroare = None
     except requests.exceptions.RequestException as e:
         vreme = None
+        temperaturi_forecast = {}
         eroare = f"Eroare la obținerea vremii: {e}"
 
     return templates.TemplateResponse(
@@ -179,7 +227,7 @@ def home(request: Request):
             "salut": mesaj,
             "vreme": vreme,
             "eroare": eroare,
-            "oras": oras,
+            "oras": info_oras["name"], # Afisam orasul cautat sau Iasi implicit
             "temperaturi_forecast": temperaturi_forecast,
             "data_curenta": data_curenta, # Trimitem data in sablon
             "sarcini": sarcini_ordonate, # Trimitem lista de sarcini ordonata catre sablon
