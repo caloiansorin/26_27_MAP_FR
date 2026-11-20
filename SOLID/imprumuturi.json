@@ -1,0 +1,14 @@
+[
+   {
+      "nume": "Ana",
+      "echipament": "Kit Arduino"
+   },
+   {
+      "nume": "Marcel",
+      "echipament": "Kit Raspberry"
+   },
+   {
+      "nume": "Ionel",
+      "echipament": "Laptop Thinkpad x230"
+   }
+]

@@ -1,7 +1,7 @@
 # Registru Echipament Laborator - Principiile SOLID
 from dataclasses import asdict
 import json
-import os
+from os import write
 import csv
 
 
@@ -43,7 +43,7 @@ class SalvareCSV(SalvareImprumuturi):
         with open("/home/nistor/Workspace/1_inbox/academic/ub/anul2/RCSP/26_27_MAP_FR/SOLID/imprumuturi.csv", "w", newline="") as fisier:
             writer = csv.DictWriter(fisier, fieldnames=["nume", "echipament"])
             writer.writeheader()
-            writer.writerow(rowdict=imprumuturi)
+            writer.writerows(imprumuturi)
 
 def efectueaza_salvare(salvator:SalvareImprumuturi, imprumuturi):
     salvator.salveaza(imprumuturi)
@@ -52,6 +52,9 @@ def efectueaza_salvare(salvator:SalvareImprumuturi, imprumuturi):
 class SalvareFalsa(SalvareImprumuturi):
     def salveaza(self, imprumuturi):
         print("AM SALVAT IMPRUMUTURILE")
+
+#Corectare pentru a respecta principiul Liskov
+#Si SalvareFalsa ar trebui sa efectueze aceleasi operatii ca si clasa pe care o mosteneste
  
 registru = RegistruImprumuturi()
 registru.adauga("Ana", "Kit Arduino")
@@ -61,10 +64,8 @@ registru.adauga("Ionel", "Laptop Thinkpad x230")
 raport = RaportImprumuturi()
 raport.afiseaza(registru.imprumuturi)
 
-#salvare = SalvareCSV()
-#salvare.salveaza(registru.imprumuturi)
+efectueaza_salvare(SalvareTXT(), registru.imprumuturi)
+efectueaza_salvare(SalvareJSON(), registru.imprumuturi)
+efectueaza_salvare(SalvareCSV(), registru.imprumuturi)
 
-#efectueaza_salvare(SalvareJSON(), registru.imprumuturi)
-#efectueaza_salvare(SalvareCSV(), registru.imprumuturi)
-
-efectueaza_salvare(SalvareFalsa(), registru.imprumuturi)
+#efectueaza_salvare(SalvareFalsa(), registru.imprumuturi)
