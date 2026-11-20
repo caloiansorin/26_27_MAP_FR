@@ -1,6 +1,8 @@
 # Registru Echipament Laborator - Principiile SOLID
 from dataclasses import asdict
 import json
+import os
+import csv
 
 
 class RegistruImprumuturi:
@@ -42,6 +44,14 @@ class SalvareCSV(SalvareImprumuturi):
             writer = csv.DictWriter(fisier, fieldnames=["nume", "echipament"])
             writer.writeheader()
             writer.writerow(rowdict=imprumuturi)
+
+def efectueaza_salvare(salvator:SalvareImprumuturi, imprumuturi):
+    salvator.salveaza(imprumuturi)
+
+#Incalcarea Principiului Liskov
+class SalvareFalsa(SalvareImprumuturi):
+    def salveaza(self, imprumuturi):
+        print("AM SALVAT IMPRUMUTURILE")
  
 registru = RegistruImprumuturi()
 registru.adauga("Ana", "Kit Arduino")
@@ -51,5 +61,10 @@ registru.adauga("Ionel", "Laptop Thinkpad x230")
 raport = RaportImprumuturi()
 raport.afiseaza(registru.imprumuturi)
 
-salvare = SalvareCSV()
-salvare.salveaza(registru.imprumuturi)
+#salvare = SalvareCSV()
+#salvare.salveaza(registru.imprumuturi)
+
+#efectueaza_salvare(SalvareJSON(), registru.imprumuturi)
+#efectueaza_salvare(SalvareCSV(), registru.imprumuturi)
+
+efectueaza_salvare(SalvareFalsa(), registru.imprumuturi)
