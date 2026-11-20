@@ -48,13 +48,17 @@ class SalvareCSV(SalvareImprumuturi):
 def efectueaza_salvare(salvator:SalvareImprumuturi, imprumuturi):
     salvator.salveaza(imprumuturi)
 
-#Incalcarea Principiului Liskov
-class SalvareFalsa(SalvareImprumuturi):
-    def salveaza(self, imprumuturi):
-        print("AM SALVAT IMPRUMUTURILE")
+class Notificare:
+    def trimite(self,mesaj):
+        raise NotImplementedError
 
-#Corectare pentru a respecta principiul Liskov
-#Si SalvareFalsa ar trebui sa efectueze aceleasi operatii ca si clasa pe care o mosteneste
+class NotificareEmail(Notificare):
+    def trimite(self, mesaj):
+        print("Email trimis", mesaj)
+
+class NotificareSMS(Notificare):
+    def trimite(self, mesaj):
+        print("SMS Trimis", mesaj)
  
 registru = RegistruImprumuturi()
 registru.adauga("Ana", "Kit Arduino")
@@ -68,4 +72,6 @@ efectueaza_salvare(SalvareTXT(), registru.imprumuturi)
 efectueaza_salvare(SalvareJSON(), registru.imprumuturi)
 efectueaza_salvare(SalvareCSV(), registru.imprumuturi)
 
-#efectueaza_salvare(SalvareFalsa(), registru.imprumuturi)
+#Trimitem notificari
+notificare = NotificareEmail()
+notificare.trimite("Ana a imprumutat un kit Arduino.")
