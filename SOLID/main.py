@@ -59,15 +59,27 @@ class NotificareEmail(Notificare):
 class NotificareSMS(Notificare):
     def trimite(self, mesaj):
         print("SMS Trimis", mesaj)
+
+class ServiciuImprumuturi:
+    def __init__(self):
+        self.registru = RegistruImprumuturi()
+        self.salvare = SalvareJSON()
+        self.notificare = NotificareSMS()
+    def imprumuta(self, nume, echipament):
+        self.registru.adauga(nume, echipament)
+        self.salvare.salveaza(self.registru.imprumuturi)
+        self.notificare.trimite(f"{nume} a imprumutat echipamentul {echipament}")
  
 registru = RegistruImprumuturi()
 registru.adauga("Ana", "Kit Arduino")
 registru.adauga("Marcel", "Kit Raspberry")
 registru.adauga("Ionel", "Laptop Thinkpad x230")
 
+# Afisare
 raport = RaportImprumuturi()
 raport.afiseaza(registru.imprumuturi)
 
+# Salvare
 efectueaza_salvare(SalvareTXT(), registru.imprumuturi)
 efectueaza_salvare(SalvareJSON(), registru.imprumuturi)
 efectueaza_salvare(SalvareCSV(), registru.imprumuturi)
@@ -75,3 +87,7 @@ efectueaza_salvare(SalvareCSV(), registru.imprumuturi)
 #Trimitem notificari
 notificare = NotificareEmail()
 notificare.trimite("Ana a imprumutat un kit Arduino.")
+
+serviciu = ServiciuImprumuturi()
+serviciu.imprumuta("Ana", "Kit Arduino")
+serviciu.imprumuta("Marcel", "Kit Raspberry")
