@@ -2,6 +2,8 @@
 # Fiecare client trebuie sa aiba propriile comenzi
 # Reducerile aplicate individual
 
+# Bonus task: daca ar exista o campanie de BlackFriday unde sa zicem ca oricine achita cu Revolut, primeste o reducere extra de 5%
+
 import json
 
 # Clasa care tine datele unei comenzi
