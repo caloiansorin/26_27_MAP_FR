@@ -60,15 +60,24 @@ class MetodaPlata:
 
 class PlataCard(MetodaPlata):
     def proceseaza(self, suma):
-        print(f"[Card] Suma de {suma} lei a fost înregistrată.")
+        print(f"[Card] Suma de {suma:.2f} lei a fost înregistrată.")
+        return suma
 
 class PlataCash(MetodaPlata):
     def proceseaza(self, suma):
-        print(f"[Cash] Suma de {suma} lei a fost înregistrată.")
+        print(f"[Cash] Suma de {suma:.2f} lei a fost înregistrată.")
+        return suma
 
 class PlataTransfer(MetodaPlata):
     def proceseaza(self, suma):
-        print(f"[Transfer] Suma de {suma} lei a fost înregistrată.")
+        print(f"[Transfer] Suma de {suma:.2f} lei a fost înregistrată.")
+        return suma
+
+class PlataRevolut(MetodaPlata):
+    def proceseaza(self, suma):
+        suma_cu_reducere = suma * 0.95  # Reducere extra de 5% (Black Friday) pentru cei care folosesc Revolut
+        print(f"[Revolut - Black Friday] Reducere 5% aplicată! Suma finală: {suma_cu_reducere:.2f} lei.")
+        return suma_cu_reducere
 
 
 # Clasele pentru Facturare
@@ -109,7 +118,7 @@ class FacturaTxt(GeneratorFactura):
         print(f"Am generat factura în format TXT -> '{nume_fisier}'.")
 
 
-# Magazinul Online - va gestiona doar colectia de comenzi
+# Magazinul Online - mutam o parte din procesare aici, pentru a simplifica fluxul de utilizare mai departe
 class MagazinOnline:
     def __init__(self):
         self.clienti = []
@@ -117,8 +126,26 @@ class MagazinOnline:
     def adauga_client(self, client):
         self.clienti.append(client)
 
+    def proceseaza_comanda_client(self, client, reducere=None, metoda_plata=None, generatoare_factura=None):
+        """Metodă unică prin care rulăm întregul flux pentru un client dat."""
+        print(f"\n--- Inițiere comandă pentru clientul: {client.nume} ---")
 
-# --- UTILIZARE ---
+        total = CalculatorTotal.calculeaza(client)
+
+        if reducere:
+            total = reducere.aplica(total)
+
+        if metoda_plata:
+            total = metoda_plata.proceseaza(total)
+
+        if generatoare_factura:
+            for generator in generatoare_factura:
+                generator.genereaza(client, total)
+                
+        return total
+
+
+# --- UTILIZARE SIMPLIFICATA ---
 
 magazin = MagazinOnline()
 
@@ -134,11 +161,24 @@ magazin.adauga_client(client1)
 magazin.adauga_client(client2)
 magazin.adauga_client(client3)
 
-# Procesam fluxul pentru un client anume
-client_curent = client2
-total_brut = CalculatorTotal.calculeaza(client_curent)
-total_final = ReducereStudent().aplica(total_brut)
+# Am inlocuit fluxul cu o singura comanda per client
+magazin.proceseaza_comanda_client(
+    client=client1,
+    reducere=ReducereStudent(),
+    metoda_plata=PlataRevolut(),
+    generatoare_factura=[FacturaJson(), FacturaTxt()]
+)
 
-PlataTransfer().proceseaza(total_final)
-FacturaJson().genereaza(client_curent, total_final)
-FacturaTxt().genereaza(client_curent, total_final)
+magazin.proceseaza_comanda_client(
+    client=client2,
+    reducere=ReducereProfesor(),
+    metoda_plata=PlataCash(),
+    generatoare_factura=[FacturaJson(), FacturaTxt()]
+)
+
+magazin.proceseaza_comanda_client(
+    client=client3,
+    reducere=ReducereProfesor(),
+    metoda_plata=PlataTransfer(),
+    generatoare_factura=[FacturaJson(), FacturaTxt()]
+)
