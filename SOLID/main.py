@@ -22,14 +22,26 @@ class RaportImprumuturi:
 
 
 class SalvareImprumuturi:
-    def salveaza(self, imprumuturi, format):
-        if format == "txt":
-            with open("/Users/spikecsi/Desktop/SOLID/imprumuturi.txt", "w") as fisier:
-                for imprumut in imprumuturi:
+    def salveaza(self, imprumuturi):
+        raise NotImplementedError
+
+class SalvareTXT(SalvareImprumuturi):
+    def salveaza(self,imprumuturi):
+        with open("/home/nistor/Workspace/1_inbox/academic/ub/anul2/RCSP/26_27_MAP_FR/SOLID/imprumuturi.txt", "w") as fisier:
+            for imprumut in imprumuturi:
                     fisier.write(str(imprumut) + "\n")
-        elif format == "json":
-            with open("/Users/spikecsi/Desktop/SOLID/imprumuturi.txt", "w") as fisier:
-                json.dump(imprumuturi, fisier)
+
+class SalvareJSON(SalvareImprumuturi):
+    def salveaza(self, imprumuturi):
+        with open("/home/nistor/Workspace/1_inbox/academic/ub/anul2/RCSP/26_27_MAP_FR/SOLID/imprumuturi.json", "w") as fisier:
+            json.dump(imprumuturi, fisier, indent = 3)
+
+class SalvareCSV(SalvareImprumuturi):
+    def salveaza(self, imprumuturi):
+        with open("/home/nistor/Workspace/1_inbox/academic/ub/anul2/RCSP/26_27_MAP_FR/SOLID/imprumuturi.csv", "w", newline="") as fisier:
+            writer = csv.DictWriter(fisier, fieldnames=["nume", "echipament"])
+            writer.writeheader()
+            writer.writerow(rowdict=imprumuturi)
  
 registru = RegistruImprumuturi()
 registru.adauga("Ana", "Kit Arduino")
@@ -39,5 +51,5 @@ registru.adauga("Ionel", "Laptop Thinkpad x230")
 raport = RaportImprumuturi()
 raport.afiseaza(registru.imprumuturi)
 
-salvare = SalvareImprumuturi()
-salvare.salveaza(registru.imprumuturi, json)
+salvare = SalvareCSV()
+salvare.salveaza(registru.imprumuturi)
