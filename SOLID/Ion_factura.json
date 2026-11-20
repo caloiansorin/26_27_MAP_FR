@@ -1,0 +1,11 @@
+{
+    "client": "Ion",
+    "comenzi": [
+        {
+            "produs": "Laptop",
+            "pret": 3000,
+            "cantitate": 1
+        }
+    ],
+    "total_final": 2400.0
+}

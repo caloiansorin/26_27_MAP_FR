@@ -1,0 +1,4 @@
+Factura pentru Eliza
+{'produs': 'Telefon', 'pret': 1500, 'cantitate': 2}
+{'produs': 'Casti', 'pret': 200, 'cantitate': 1}
+Total final: 2880.0

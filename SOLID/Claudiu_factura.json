@@ -1,0 +1,11 @@
+{
+    "client": "Claudiu",
+    "comenzi": [
+        {
+            "produs": "Televizor",
+            "pret": 2500,
+            "cantitate": 1
+        }
+    ],
+    "total_final": 2500
+}
