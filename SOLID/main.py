@@ -45,9 +45,6 @@ class SalvareCSV(SalvareImprumuturi):
             writer.writeheader()
             writer.writerows(imprumuturi)
 
-def efectueaza_salvare(salvator:SalvareImprumuturi, imprumuturi):
-    salvator.salveaza(imprumuturi)
-
 class Notificare:
     def trimite(self,mesaj):
         raise NotImplementedError
@@ -60,34 +57,45 @@ class NotificareSMS(Notificare):
     def trimite(self, mesaj):
         print("SMS Trimis", mesaj)
 
+# Depndency Injection
 class ServiciuImprumuturi:
-    def __init__(self):
-        self.registru = RegistruImprumuturi()
-        self.salvare = SalvareJSON()
-        self.notificare = NotificareSMS()
+    def __init__(self, registru:RegistruImprumuturi, salvare:SalvareImprumuturi, notificare:Notificare):
+        self.registru = registru
+        self.salvare = salvare
+        self.notificare = notificare
+
     def imprumuta(self, nume, echipament):
         self.registru.adauga(nume, echipament)
         self.salvare.salveaza(self.registru.imprumuturi)
         self.notificare.trimite(f"{nume} a imprumutat echipamentul {echipament}")
+
+def efectueaza_salvare(salvator:SalvareImprumuturi, imprumuturi):
+    salvator.salveaza(imprumuturi)
  
-registru = RegistruImprumuturi()
-registru.adauga("Ana", "Kit Arduino")
-registru.adauga("Marcel", "Kit Raspberry")
-registru.adauga("Ionel", "Laptop Thinkpad x230")
+#registru = RegistruImprumuturi()
+#registru.adauga("Ana", "Kit Arduino")
+#registru.adauga("Marcel", "Kit Raspberry")
+#registru.adauga("Ionel", "Laptop Thinkpad x230")
 
 # Afisare
-raport = RaportImprumuturi()
-raport.afiseaza(registru.imprumuturi)
+#raport = RaportImprumuturi()
+#raport.afiseaza(registru.imprumuturi)
 
 # Salvare
-efectueaza_salvare(SalvareTXT(), registru.imprumuturi)
-efectueaza_salvare(SalvareJSON(), registru.imprumuturi)
-efectueaza_salvare(SalvareCSV(), registru.imprumuturi)
+#efectueaza_salvare(SalvareTXT(), registru.imprumuturi)
+#efectueaza_salvare(SalvareJSON(), registru.imprumuturi)
+#efectueaza_salvare(SalvareCSV(), registru.imprumuturi)
 
 #Trimitem notificari
-notificare = NotificareEmail()
-notificare.trimite("Ana a imprumutat un kit Arduino.")
+#notificare = NotificareEmail()
+#notificare.trimite("Ana a imprumutat un kit Arduino.")
 
-serviciu = ServiciuImprumuturi()
+#serviciu = ServiciuImprumuturi()
+#serviciu.imprumuta("Ana", "Kit Arduino")
+#serviciu.imprumuta("Marcel", "Kit Raspberry")
+
+registru = RegistruImprumuturi()
+serviciu = ServiciuImprumuturi(registru, SalvareJSON(), NotificareEmail())
 serviciu.imprumuta("Ana", "Kit Arduino")
-serviciu.imprumuta("Marcel", "Kit Raspberry")
+serviciu.imprumuta("Maria", "Mouse")
+serviciu.imprumuta("Cristian", "Tableta")
